@@ -1,28 +1,29 @@
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 public class User {
     private String username;
     private String password;
-    private String coordX;
-    private String coordY;
+    // TODO: Encapsulamento
+    private Collection<Location> location;
 
     public User() {
         this.username = "";
         this.password = "";
-        this.coordX   = "";
-        this.coordY   = "";
+        this.location = new ArrayList<>();
     }
 
-    public User(String username, String password, String coordX, String coordY) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.coordX   = coordX;
-        this.coordY   = coordY;
+        this.location = new ArrayList<>();
     }
 
     public User(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.coordX   = user.getCoordX();
-        this.coordY   = user.getCoordY();
+        this.location = user.getLocation();
     }
 
     public String getUsername() {
@@ -41,19 +42,11 @@ public class User {
         this.password = password;
     }
 
-    public String getCoordX() {
-        return this.coordX;
+    public Collection<Location> getLocation() {
+        return this.location.stream().map(Location::clone).collect(Collectors.toList());
     }
 
-    public void setCoordX(String coordX) {
-        this.coordX = coordX;
-    }
-
-    public String getCoordY() {
-        return this.coordY;
-    }
-
-    public void setCoordY(String coordY) {
-        this.coordY = coordY;
+    public void setLocation(Collection<Location> location) {
+        this.location = location.stream().map(Location::clone).collect(Collectors.toList());
     }
 }

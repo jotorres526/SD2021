@@ -1,6 +1,6 @@
 public class Prompt {
 
-    void receive() {}
+    public void receive() {}
 
-    void send() {}
+    public void send() {}
 }
