@@ -1,13 +1,43 @@
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class Server {
-    // TODO: Encapsulamento
-    private Collection<User> usersList;
-    //private int[][] numberUsers;
+    public static void main(String[] args) throws Exception {
+        var ss = new ServerSocket(12345);
+        while(true) {
+            try (var s == ss.accept()) {
+                var dos = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
+                var dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
 
-    public Server() {
-        this.usersList = new ArrayList<>();
+                while(true) {
+                    switch(dis.readUTF()) {
+                        case "register":
+                            break;
+
+                        case "login":
+                            break;
+
+                        case "change location":
+                            break;
+
+                        case "how many people in a location":
+                            break;
+
+                        case "comunicate infection":
+                            break;
+
+                        case "load map":
+                            break;
+                    }
+                }
+            }
+        }
     }
+
 
 }
