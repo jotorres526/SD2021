@@ -1,7 +1,4 @@
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,10 +7,9 @@ public class Server {
     public static void main(String[] args) throws Exception {
         var ss = new ServerSocket(12345);
         while(true) {
-            try (var s == ss.accept()) {
+            try (var s = ss.accept()) {
                 var dos = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
                 var dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
-
                 while(true) {
                     switch(dis.readUTF()) {
                         case "register":
@@ -35,9 +31,9 @@ public class Server {
                             break;
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
-
-
 }

@@ -12,11 +12,11 @@ public class Stub {
         this.dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
     }
 
-    public /*Cliente*/void registar() {
+    public /*User*/void registar() {
 
     }
 
-    public /*Cliente*/void login() {
+    public /*User*/void login() {
 
     }
 
