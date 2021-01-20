@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -11,19 +12,19 @@ public class User {
     private ReadWriteLock wlock;
     private ReadWriteLock rlock;
 
-    public User() {
+    public User() throws IOException {
         this.username = "";
         this.password = "";
         this.location = new ArrayList<>();
     }
 
-    public User(String username, String password) {
+    public User(String username, String password) throws IOException {
         this.username = username;
         this.password = password;
         this.location = new ArrayList<>();
     }
 
-    public User(User user) {
+    public User(User user) throws IOException {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.location = user.getLocation();
@@ -86,8 +87,11 @@ public class User {
         return this.password.equals(pw);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Stub stub = new Stub();
+
 
     }
 
 }
+

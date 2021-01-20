@@ -1,9 +1,9 @@
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Controller {
     private Map<String, User> mapUsers;
-    //TODO: Maybe colocar aqui o Stub, idk
     private ReentrantLock lock;
 
     /**
@@ -16,6 +16,8 @@ public class Controller {
             this.lock.lock();
             User user = new User(name, pw);
             this.mapUsers.put(name, user);
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             this.lock.unlock();
         }
