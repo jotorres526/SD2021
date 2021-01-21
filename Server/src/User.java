@@ -24,7 +24,7 @@ public class User {
         this.location = new ArrayList<>();
     }
 
-    public User(User user) throws IOException {
+    public User(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.location = user.getLocation();
@@ -55,7 +55,7 @@ public class User {
     }
 
     /**
-     * Adiciona uma localizacao na cauda da lista
+     * Adiciona uma localizacao (que corresponde à mais atualizada) na cauda da lista
      * @param location localizacao
      */
     public void addLocation(Location location) {

@@ -1,3 +1,8 @@
+/**
+ * Classe Localização
+ * Contém as coordenadas de um User, que são atribuídas através
+ * de uma grelha NxN.
+ */
 public class Location {
     private String coordX;
     private String coordY;

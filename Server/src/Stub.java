@@ -12,16 +12,10 @@ public class Stub {
         this.dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
     }
 
-    public /*User*/void registar() {
+    public void registar() throws IOException {}
 
-    }
+    public boolean login() { return false; }
 
-    public /*User*/void login() {
-
-    }
-
-    public /*int*/void setLoc() {
-
-    }
+    public /*int*/void setLoc() {}
 
 }

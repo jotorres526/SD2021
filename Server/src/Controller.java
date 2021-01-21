@@ -1,10 +1,26 @@
 import java.io.IOException;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Classe Controller
+ * Pretende guardar o conjunto de utilizadores normais da aplicação.
+ * Dispõe de um Map para esse efeito e, para além disso, de um ReentrantLock
+ * caso seja necessário proceder a alterações no Map de forma concorrente.
+ */
 public class Controller {
-    private Map<String, User> mapUsers;
+    private final Map<String, User> mapUsers;
     private ReentrantLock lock;
+
+    public Controller() {
+        this.mapUsers = new TreeMap<>();
+        this.lock = new ReentrantLock();
+    }
+
+    public Controller(Map<String, User> map) {
+        this.mapUsers = map;
+    }
 
     /**
      * Regista um User no Map
@@ -13,13 +29,13 @@ public class Controller {
      */
     public void register(String name, String pw) {
         try {
-            this.lock.lock();
+            lock.lock();
             User user = new User(name, pw);
             this.mapUsers.put(name, user);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 
@@ -38,11 +54,11 @@ public class Controller {
 
     /**
      * Adiciona uma localizacao à cauda da lista de localizacoes
-     * @param id identificador
+     * @param username identificador
      * @param l localizacao
      */
-    public void addLocalizacao(String id, Location l) {
-        User user = this.mapUsers.get(id);
+    public void addLocalizacao(String username, Location l) {
+        User user = this.mapUsers.get(username);
         if (user != null) user.addLocation(l);
     }
 
