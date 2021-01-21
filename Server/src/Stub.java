@@ -11,7 +11,7 @@ public class Stub {
         this.dos = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
         this.dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
     }
-
+    //TODO métodos do Stub
     public void registar() throws IOException {}
 
     public boolean login() { return false; }

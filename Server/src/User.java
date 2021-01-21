@@ -12,6 +12,7 @@ public class User {
     private ReadWriteLock wlock;
     private ReadWriteLock rlock;
 
+    //TODO aplicar os locks aos métodos
     public User() throws IOException {
         this.username = "";
         this.password = "";
@@ -55,7 +56,7 @@ public class User {
     }
 
     /**
-     * Adiciona uma localizacao (que corresponde à mais atualizada) na cauda da lista
+     * Adiciona uma localizacao à cauda da lista, passando a ser a localização mais atual
      * @param location localizacao
      */
     public void addLocation(Location location) {
@@ -88,7 +89,7 @@ public class User {
     }
 
     public static void main(String[] args) throws IOException {
-        Stub stub = new Stub();
+        Stub stub = new Stub(); //TODO acabar main do User
 
 
     }

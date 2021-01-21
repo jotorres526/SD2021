@@ -48,6 +48,7 @@ public class ControllerSkeleton implements Skeleton {
                 dos.flush();
                 break;
 
+                //TODO terminar queries
             case "communicate infection": //para além de comunicar, avisar todos os users que já tiveram na loc do User
                 break;
 
