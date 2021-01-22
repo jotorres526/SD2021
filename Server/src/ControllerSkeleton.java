@@ -40,7 +40,7 @@ public class ControllerSkeleton implements Skeleton {
                 this.controller.addLocalizacao(n, new Location(locX, locY));
                 break;
 
-            case "how many people in a certain location":
+            case "how many people in a location":
                 String x = dis.readUTF();
                 String y = dis.readUTF();
                 int number = this.controller.getNumberInLoc(new Location(x,y));

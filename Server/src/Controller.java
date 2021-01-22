@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Controller {
     private final Map<String, User> mapUsers;
     private ReentrantLock lock;
+    //TODO será que é preciso usar também readwrite locks por causa de casos como o método getNumberInLoc
 
     public Controller() {
         this.mapUsers = new TreeMap<>();

@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * Classe Localização
  * Contém as coordenadas de um User, que são atribuídas através
@@ -20,6 +22,19 @@ public class Location {
     public Location(Location loc) {
         this.coordX = loc.getCoordX();
         this.coordY = loc.getCoordY();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Location location = (Location) o;
+        return Objects.equals(coordX, location.coordX) && Objects.equals(coordY, location.coordY);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(coordX, coordY);
     }
 
     public String getCoordX() {
