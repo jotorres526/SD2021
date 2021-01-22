@@ -1,7 +1,7 @@
-import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Classe Controller
@@ -11,11 +11,12 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Controller {
     private final Map<String, User> mapUsers;
-    private final ReentrantLock lock;
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Lock rlock = lock.readLock();
+    private final Lock wlock = lock.writeLock();
 
     public Controller() {
         this.mapUsers = new TreeMap<>();
-        this.lock = new ReentrantLock();
     }
 
     /**
@@ -25,13 +26,11 @@ public class Controller {
      */
     public void register(String name, String pw) {
         try {
-            lock.lock();
+            wlock.lock();
             User user = new User(name, pw);
             this.mapUsers.put(name, user);
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
-            lock.unlock();
+            wlock.unlock();
         }
     }
 
@@ -42,10 +41,16 @@ public class Controller {
      * @return true caso as credenciais correspondam, false caso contrário
      */
     public boolean login(String name, String pw) {
-        User user = this.mapUsers.get(name);
-        boolean r = false;
-        if (user != null) r = user.login(pw);
-        return r;
+        try {
+            rlock.lock();
+            boolean r = false;
+            User user = this.mapUsers.get(name);
+            if (user != null) r = user.login(pw);
+            return r;
+        } finally {
+            rlock.unlock();
+        }
+
     }
 
     /**
@@ -54,8 +59,14 @@ public class Controller {
      * @param l localizacao
      */
     public void addLocalizacao(String username, Location l) {
-        User user = this.mapUsers.get(username);
-        if (user != null) user.addLocation(l);
+        try {
+            rlock.lock();
+            User user = this.mapUsers.get(username);
+            if (user != null) user.addLocation(l);
+        } finally {
+            rlock.unlock();
+        }
+
     }
 
     /**
@@ -67,7 +78,7 @@ public class Controller {
         int r = 0;
         for (Map.Entry<String, User> entry : this.mapUsers.entrySet()) {
             User user = entry.getValue();
-            r += user.getNumberInLoc(loc);
+            if (user.isInLocation(loc)) r++;
         }
         return r;
     }
