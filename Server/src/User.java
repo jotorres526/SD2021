@@ -9,7 +9,8 @@ public class User {
     private String password;
     // TODO: Encapsulamento
     private Collection<Location> location;
-    private ReadWriteLock rwlock;
+    private ReadWriteLock wlock;
+    private ReadWriteLock rlock;
 
     public User() throws IOException {
         this.username = "";
@@ -47,20 +48,20 @@ public class User {
 
     public Collection<Location> getLocation() {
         try {
-            rwlock.readLock().lock();
+            rlock.readLock().lock();
             return this.location.stream().map(Location::clone).collect(Collectors.toList());
         }
         finally {
-          rwlock.readLock().unlock();
+          rlock.readLock().unlock();
         }
     }
 
     public void setLocation(Collection<Location> location) {
         try {
-            rwlock.writeLock().lock();
+            wlock.writeLock().lock();
             this.location = location.stream().map(Location::clone).collect(Collectors.toList());
         } finally {
-            rwlock.writeLock().unlock();
+            wlock.writeLock().unlock();
         }
     }
 
@@ -70,10 +71,10 @@ public class User {
      */
     public void addLocation(Location location) {
         try {
-            rwlock.writeLock().lock();
+            wlock.writeLock().lock();
             this.location.add(location);
         } finally {
-            rwlock.writeLock().unlock();
+            wlock.writeLock().unlock();
         }
     }
 
@@ -87,7 +88,7 @@ public class User {
     public int getNumberInLoc(Location l) {
         int r = 0;
         try {
-            rwlock.readLock().lock();
+            rlock.readLock().lock();
             Location loc = new Location();
             for (Location location : this.location)
                 loc = location;
@@ -95,7 +96,7 @@ public class User {
             return r;
         }
         finally {
-            rwlock.readLock().unlock();
+            rlock.readLock().unlock();
         }
     }
 
@@ -106,10 +107,10 @@ public class User {
      */
     public boolean login(String pw) {
         try {
-            rwlock.readLock().lock();
+            rlock.readLock().lock();
             return this.password.equals(pw);
         } finally {
-            rwlock.readLock().unlock();
+            rlock.readLock().unlock();
         }
     }
 

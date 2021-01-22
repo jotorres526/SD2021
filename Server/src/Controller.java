@@ -18,8 +18,6 @@ public class Controller {
         this.lock = new ReentrantLock();
     }
 
-
-
     /**
      * Regista um User no Map
      * @param name username
