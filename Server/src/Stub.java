@@ -11,9 +11,10 @@ import java.net.Socket;
 public class Stub {
     private final DataOutputStream dos;
     private final DataInputStream dis;
+    private final Socket s;
 
     public Stub() throws IOException {
-        Socket s = new Socket("localhost", 12345);
+        this.s = new Socket("localhost", 12345);
         this.dos = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
         this.dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
     }
@@ -44,9 +45,20 @@ public class Stub {
         this.dos.writeUTF(pw);
         this.dos.flush();
         return this.dis.readBoolean();
-
     }
 
+    /**
+     * Dá logout no User
+     */
+    public void logout() {
+        try {
+            this.dos.writeUTF("exit");
+            this.dos.flush();
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Atualiza a localização de um User
      * @param user username
@@ -79,6 +91,8 @@ public class Stub {
         this.dos.writeUTF(locY);
         return this.dis.readInt();
     }
+
+
 
     //TODO queries restantes no Stub
 }

@@ -115,10 +115,8 @@ public class User {
 
     public static void main(String[] args) throws IOException {
         Stub stub = new Stub(); //TODO acabar main do User
-        //aqui chamam-se os métodos do stub
-
-
+        System.out.println("AAA");
+        stub.logout();
     }
-
 }
 

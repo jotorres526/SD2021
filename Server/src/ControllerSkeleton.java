@@ -18,42 +18,43 @@ public class ControllerSkeleton implements Skeleton {
 
     @Override
     public void handle(DataInputStream dis, DataOutputStream dos) throws Exception {
-        switch(dis.readUTF()) {
-            case "register":
-                String name = dis.readUTF();
-                String pw = dis.readUTF();
-                this.controller.register(name,pw);
-                break;
-
-            case "login":
-                String username = dis.readUTF();
-                String password = dis.readUTF();
-                boolean success = this.controller.login(username, password);
-                dos.writeBoolean(success);
-                dos.flush();
-                break;
-
-            case "change location":
-                String n = dis.readUTF();
-                String locX = dis.readUTF();
-                String locY = dis.readUTF();
-                this.controller.addLocalizacao(n, new Location(locX, locY));
-                break;
-
-            case "how many people in location":
-                String x = dis.readUTF();
-                String y = dis.readUTF();
-                int number = this.controller.getNumberInLoc(new Location(x,y));
-                dos.writeInt(number);
-                dos.flush();
-                break;
-
+        boolean cont = true;
+        while (cont) {
+            switch (dis.readUTF()) {
+                case "register":
+                    String name = dis.readUTF();
+                    String pw = dis.readUTF();
+                    this.controller.register(name, pw);
+                    break;
+                case "login":
+                    String username = dis.readUTF();
+                    String password = dis.readUTF();
+                    boolean success = this.controller.login(username, password);
+                    dos.writeBoolean(success);
+                    dos.flush();
+                    break;
+                case "change location":
+                    String n = dis.readUTF();
+                    String locX = dis.readUTF();
+                    String locY = dis.readUTF();
+                    this.controller.addLocalizacao(n, new Location(locX, locY));
+                    break;
+                case "how many people in location":
+                    String x = dis.readUTF();
+                    String y = dis.readUTF();
+                    int number = this.controller.getNumberInLoc(new Location(x, y));
+                    dos.writeInt(number);
+                    dos.flush();
+                    break;
                 //TODO terminar queries
-            case "communicate infection": //para além de comunicar, avisar todos os users que já tiveram na loc do User
-                break;
-
-            case "load map": //aqui talvez podemos add um boolean no User que diz se ele é especial pra ter acesso
-                break;
+                case "communicate infection": //para além de comunicar, avisar todos os users que já tiveram na loc do User
+                    break;
+                case "load map": //aqui talvez podemos add um boolean no User que diz se ele é especial pra ter acesso
+                    break;
+                case "exit":
+                    cont = false;
+                    break;
+            }
         }
     }
 }

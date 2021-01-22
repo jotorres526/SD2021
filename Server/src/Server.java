@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
 
 /**
@@ -11,19 +12,24 @@ import java.util.*;
  */
 public class Server {
     public static void main(String[] args) throws Exception {
-        Map<Integer, Skeleton> map = new HashMap<>();
         Skeleton skeleton = new ControllerSkeleton(new Controller());
-
         var ss = new ServerSocket(12345);
+
         while(true) {
-            try (var s = ss.accept()) {
-                var dos = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
-                var dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
-                while(true)
+            System.out.println("À espera de conexão");
+            Socket s = ss.accept();
+
+            Runnable user = () -> {
+                try (s) {
+                    var dos = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
+                    var dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
                     skeleton.handle(dis,dos);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                    System.out.println("port:" + s.getPort());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
+            new Thread(user).start();
         }
     }
 }
