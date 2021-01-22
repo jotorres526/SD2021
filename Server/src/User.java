@@ -9,10 +9,8 @@ public class User {
     private String password;
     // TODO: Encapsulamento
     private Collection<Location> location;
-    private ReadWriteLock wlock;
-    private ReadWriteLock rlock;
+    private ReadWriteLock rwlock;
 
-    //TODO aplicar os locks aos métodos
     public User() throws IOException {
         this.username = "";
         this.password = "";
@@ -48,11 +46,22 @@ public class User {
     }
 
     public Collection<Location> getLocation() {
-        return this.location.stream().map(Location::clone).collect(Collectors.toList());
+        try {
+            rwlock.readLock().lock();
+            return this.location.stream().map(Location::clone).collect(Collectors.toList());
+        }
+        finally {
+          rwlock.readLock().unlock();
+        }
     }
 
     public void setLocation(Collection<Location> location) {
-        this.location = location.stream().map(Location::clone).collect(Collectors.toList());
+        try {
+            rwlock.writeLock().lock();
+            this.location = location.stream().map(Location::clone).collect(Collectors.toList());
+        } finally {
+            rwlock.writeLock().unlock();
+        }
     }
 
     /**
@@ -60,7 +69,12 @@ public class User {
      * @param location localizacao
      */
     public void addLocation(Location location) {
+        try {
+            rwlock.writeLock().lock();
             this.location.add(location);
+        } finally {
+            rwlock.writeLock().unlock();
+        }
     }
 
     /**
@@ -72,11 +86,17 @@ public class User {
      */
     public int getNumberInLoc(Location l) {
         int r = 0;
-        Location loc = new Location();
-        for (Location location : this.location)
-            loc = location;
-        if (loc.equals(l)) r++;
-        return r;
+        try {
+            rwlock.readLock().lock();
+            Location loc = new Location();
+            for (Location location : this.location)
+                loc = location;
+            if (loc.equals(l)) r++;
+            return r;
+        }
+        finally {
+            rwlock.readLock().unlock();
+        }
     }
 
     /**
@@ -85,11 +105,17 @@ public class User {
      * @return true caso corresponda, false caso contrário
      */
     public boolean login(String pw) {
-        return this.password.equals(pw);
+        try {
+            rwlock.readLock().lock();
+            return this.password.equals(pw);
+        } finally {
+            rwlock.readLock().unlock();
+        }
     }
 
     public static void main(String[] args) throws IOException {
         Stub stub = new Stub(); //TODO acabar main do User
+        //aqui chamam-se os métodos do stub
 
 
     }

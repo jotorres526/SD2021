@@ -66,7 +66,6 @@ public class Stub {
 
     /**
      * Calcula o número de pessoas situadas numa dada localização
-     * @param user username do User que enviou a query
      * @param locX primeiro parâmetro da localização, sendo que uma localização
      *             corresponde a um par (x,y)
      * @param locY segundo parâmetro da localização, sendo que uma localização
@@ -74,9 +73,8 @@ public class Stub {
      * @return número de pessoas situadas numa dada localização
      * @throws IOException exceção
      */
-    public int howManyInLocation(String user, String locX, String locY) throws IOException {
-        this.dos.writeUTF("how many people in a location");
-        this.dos.writeUTF(user);
+    public int howManyInLocation(String locX, String locY) throws IOException {
+        this.dos.writeUTF("how many people in location");
         this.dos.writeUTF(locX);
         this.dos.writeUTF(locY);
         return this.dis.readInt();
