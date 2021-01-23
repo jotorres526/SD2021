@@ -1,10 +1,15 @@
+package Controller;
+
+import User.User;
+import User.Location;
+
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Classe Controller
+ * Classe Controller.Controller
  * Pretende guardar o conjunto de utilizadores normais da aplicação.
  * Dispõe de um Map para esse efeito e, para além disso, de um ReentrantLock
  * caso seja necessário proceder a alterações no Map de forma concorrente.
@@ -20,7 +25,7 @@ public class Controller {
     }
 
     /**
-     * Regista um User no Map
+     * Regista um User.User no Map
      * @param name username
      * @param pw password
      */
@@ -35,7 +40,7 @@ public class Controller {
     }
 
     /**
-     * Autenticação de um User
+     * Autenticação de um User.User
      * @param name username
      * @param pw password
      * @return true caso as credenciais correspondam, false caso contrário

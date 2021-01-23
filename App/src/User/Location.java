@@ -1,8 +1,10 @@
+package User;
+
 import java.util.Objects;
 
 /**
  * Classe Localização
- * Contém as coordenadas de um User, que são atribuídas através
+ * Contém as coordenadas de um User.User, que são atribuídas através
  * de uma grelha NxN.
  */
 public class Location {

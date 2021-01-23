@@ -1,9 +1,8 @@
-import java.io.IOException;
+package User;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 public class User {
     private String username;
@@ -81,9 +80,9 @@ public class User {
     }
 
     /**
-     * Retorna true se o User está atualmente numa localizacao e false caso não esteja
+     * Retorna true se o User.User está atualmente numa localizacao e false caso não esteja
      * A variável loc serve para alcançar a localizacao atual que está na cauda
-     * da lista de localizacoes do User
+     * da lista de localizacoes do User.User
      * @param l localizacao
      * @return true se estiver na location, false caso contrário
      */
@@ -100,7 +99,7 @@ public class User {
     }
 
     /**
-     * Verifica se a password corresponde à do User
+     * Verifica se a password corresponde à do User.User
      * @param pw password
      * @return true caso corresponda, false caso contrário
      */
@@ -111,12 +110,6 @@ public class User {
         } finally {
             rlock.unlock();
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        Stub stub = new Stub(); //TODO acabar main do User
-        System.out.println("AAA");
-        stub.logout();
     }
 }
 

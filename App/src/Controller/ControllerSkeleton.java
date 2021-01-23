@@ -1,10 +1,14 @@
+package Controller;
+
+import User.Location;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 /**
- * A classe ControllerSkeleton serve como um middleware que decide a qual dos
+ * A classe Controller.ControllerSkeleton serve como um middleware que decide a qual dos
  * "Controllers" recorrer, dependendo da query que está a ser executada.
- * Neste momento, como só foi implementado um Controller, a escolha desta classe será
+ * Neste momento, como só foi implementado um Controller.Controller, a escolha desta classe será
  * simples, mas, eventualmente, será necessário criar novos Controllers que armazenam
  * diferentes objetos e aí irá ser posta em prática a utilidade desta classe.
  * Por isso, esta classe está preparada para uma eventual expansão de código.
@@ -47,9 +51,9 @@ public class ControllerSkeleton implements Skeleton {
                     dos.flush();
                     break;
                 //TODO terminar queries
-                case "communicate infection": //para além de comunicar, avisar todos os users que já tiveram na loc do User
+                case "communicate infection": //para além de comunicar, avisar todos os users que já tiveram na loc do User.User
                     break;
-                case "load map": //aqui talvez podemos add um boolean no User que diz se ele é especial pra ter acesso
+                case "load map": //aqui talvez podemos add um boolean no User.User que diz se ele é especial pra ter acesso
                     break;
                 case "exit":
                     cont = false;
