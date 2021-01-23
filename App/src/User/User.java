@@ -1,12 +1,16 @@
-package User;
-
+import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class User {
     private String username;
     private String password;
+    private boolean privileged;
     // TODO: Encapsulamento
     private ArrayList<Location> location;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -16,12 +20,14 @@ public class User {
     public User() {
         this.username = "";
         this.password = "";
+        this.privileged = false;
         this.location = new ArrayList<>();
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, boolean privileged) {
         this.username = username;
         this.password = password;
+        this.privileged = privileged;
         this.location = new ArrayList<>();
     }
 
@@ -80,9 +86,9 @@ public class User {
     }
 
     /**
-     * Retorna true se o User.User está atualmente numa localizacao e false caso não esteja
+     * Retorna true se o User está atualmente numa localizacao e false caso não esteja
      * A variável loc serve para alcançar a localizacao atual que está na cauda
-     * da lista de localizacoes do User.User
+     * da lista de localizacoes do User
      * @param l localizacao
      * @return true se estiver na location, false caso contrário
      */
@@ -99,7 +105,7 @@ public class User {
     }
 
     /**
-     * Verifica se a password corresponde à do User.User
+     * Verifica se a password corresponde à do User
      * @param pw password
      * @return true caso corresponda, false caso contrário
      */
@@ -109,6 +115,37 @@ public class User {
             return this.password.equals(pw);
         } finally {
             rlock.unlock();
+        }
+    }
+
+    /**
+     * Obtém a localização mais atual
+     * @return localização mais atual
+     */
+    public Location getLastLoc() {
+        return this.location.get(0);
+    }
+
+    /**
+     * A partir de uma localização de um outroUser infetado, verifica se
+     * este User já passou por essa localização
+     * @param l localização
+     * @return true caso já tenha passado por essa localização, false
+     * caso contrário
+     */
+    public boolean locEqualsInfected(Location l) {
+        for (Location location : this.location)
+            if (location.equals(l)) return true;
+        return false;
+    }
+
+    public static void main(String[] args) throws IOException {
+        try {
+            Stub stub = new Stub(); //TODO acabar main do User
+            System.out.println("AAA");
+            stub.logout();
+        } catch (ConnectException c) {
+            System.out.println("Connection refused! Server is sleeping...");
         }
     }
 }

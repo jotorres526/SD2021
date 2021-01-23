@@ -2,6 +2,10 @@ package Server;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Classe Server.Stub
@@ -25,7 +29,7 @@ public class Stub {
      * Registo de um User.User no Map
      * @param user username
      * @param pw password
-     * @throws IOException
+     * @throws IOException exceção
      */
     public void register(String user, String pw) {
         try {
@@ -128,7 +132,48 @@ public class Stub {
         return r;
     }
 
-
+    /**
+     * Carrega o mapa de todas as localizações da grelha
+     * Primeiro, começa por enviar ao seu servidor um boolean para que seja validado
+     * com o objetivo de ter acesso ao mapa. Também é enviado o número de linhas e
+     * colunas da grelha. De seguida, inicia-se um ciclo que começa por receber um
+     * booleano que lhe indica se irá receber uma última "entrada" do mapa pretendido
+     * com o par (Localização, Lista de usernames). Caso esse booleano seja true,
+     * significa que será a última iteração do ciclo. Depois, recebe duas Strings que
+     * correspondem aos parâmetros da localização, com o par (x,y). Recebe também,
+     * associado a essa localização, o tamanho da lista de usernames irá receber,
+     * relembrando que essa lista corresponde aos usernames que estão nessa localização.
+     * Ao receber o tamanho, começa-se um novo ciclo que adiciona todos os usernames
+     * à lista associada. Caso não haja nenhum elemento a adicionar, a lista irá
+     * permanecer vazia, significando que não há ninguém nessa localização.
+     * @param privilege true caso o User seja privilegiado, false caso contrário
+     * @param n número de linhas e colunas da grelha
+     * @return mapa com todas as localizações e listas de usernames de cada cliente
+     * associadas
+     * @throws IOException exceção
+     */
+    public Map<Location, Collection<String>> loadMap(boolean privilege, int n) throws IOException {
+        this.dos.writeBoolean(privilege);
+        this.dos.writeInt(n);
+        boolean keepGoing = true;
+        Map<Location, Collection<String>> map = new TreeMap<>();
+        while (keepGoing) {
+            keepGoing = dis.readBoolean();
+            String locX = dis.readUTF();
+            String locY = dis.readUTF();
+            int size = dis.readInt();
+            Location loc = new Location(locX, locY);
+            map.put(loc, new ArrayList<>());
+            if (size > 0) {
+                for (int i = 0; i < size; i++) {
+                    String user = dis.readUTF();
+                    Collection<String> list = map.get(loc);
+                    list.add(user);
+                }
+            }
+        }
+        return map;
+    }
 
     //TODO queries restantes no Server.Stub
 }
