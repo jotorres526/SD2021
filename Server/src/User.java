@@ -133,10 +133,14 @@ public class User {
      * @return true caso já tenha passado por essa localização, false
      * caso contrário
      */
-    public boolean locEqualsInfected(Location l) {
+    public boolean locEqualsInfected(Location l) { /*INÚTIL*/
         for (Location location : this.location)
             if (location.equals(l)) return true;
         return false;
+    }
+
+    public boolean locEquals(Location l) {
+        return this.getLastLoc().equals(l);
     }
 
     public static void main(String[] args) throws IOException {

@@ -29,11 +29,12 @@ public class Stub {
      * @param pw password
      * @throws IOException exceção
      */
-    public void register(String user, String pw) throws IOException {
+    public boolean register(String user, String pw) throws IOException {
         this.dos.writeUTF("register");
         this.dos.writeUTF(user);
         this.dos.writeUTF(pw);
         this.dos.flush();
+        return this.dis.readBoolean();
     }
 
     /**

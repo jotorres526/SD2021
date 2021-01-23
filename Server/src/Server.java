@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
 
 /**
  * Classe Servidor
@@ -12,7 +11,7 @@ import java.util.*;
  */
 public class Server {
     public static void main(String[] args) throws Exception {
-        Skeleton skeleton = new ControllerSkeleton(new Controller());
+        Skeleton skeleton = new ControllerSkeleton(new UsersController(), new RegisterUsers());
         var ss = new ServerSocket(12345);
 
         while(true) {

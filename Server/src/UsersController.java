@@ -8,14 +8,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Dispõe de um Map para esse efeito e, para além disso, de um ReentrantLock
  * caso seja necessário proceder a alterações no Map de forma concorrente.
  */
-public class Controller {
+public class UsersController {
     private final Map<String, User> mapUsers;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock rlock = lock.readLock();
     private final Lock wlock = lock.writeLock();
 
-    public Controller() {
+    public UsersController() {
         this.mapUsers = new TreeMap<>();
+    }
+
+    public boolean existsUser(String user) {
+        return this.mapUsers.get(user) != null;
     }
 
     /**
@@ -23,11 +27,16 @@ public class Controller {
      * @param name username
      * @param pw password
      */
-    public void register(String name, String pw, boolean privileged) {
+    public boolean register(String name, String pw, boolean privileged) {
         try {
             wlock.lock();
+            boolean success = false;
             User user = new User(name, pw, privileged);
-            this.mapUsers.put(name, user);
+            if (!existsUser(name)) {
+                this.mapUsers.put(name, user);
+                success = true;
+            }
+            return success;
         } finally {
             wlock.unlock();
         }
@@ -52,18 +61,30 @@ public class Controller {
 
     }
 
+    public Collection<String> getNewRegUsers(Location loc) {
+        try {
+            rlock.lock();
+            Collection<String> list = new ArrayList<>();
+            for (Map.Entry<String, User> entry : mapUsers.entrySet())
+                if (entry.getValue().locEquals(loc)) list.add(entry.getKey());
+            return list;
+        } finally {
+           rlock.unlock();
+        }
+    }
+
     /**
-     * Adiciona uma localizacao à cauda da lista de localizacoes
+     * Adiciona uma localizacao à lista de localizacoes
      * @param username identificador
      * @param l localizacao
      */
     public void addLocalizacao(String username, Location l) {
         try {
-            rlock.lock();
+            wlock.lock();
             User user = this.mapUsers.get(username);
             if (user != null) user.addLocation(l);
         } finally {
-            rlock.unlock();
+            wlock.unlock();
         }
 
     }
@@ -91,18 +112,26 @@ public class Controller {
      * @return Mapa em que a chave é a localização e o valor corresponde
      * a uma lista de Users que lá se encontram
      * @param n número de linhas e colunas da grelha
+     * @param privilege true caso tenha privilégios, false caso contrário
      */
-    public Map<Location, Collection<String>> loadMap(int n) {
-        Map<Location, Collection<String>> map = new TreeMap<>(); //comparator!
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                map.put(new Location(String.valueOf(i),String.valueOf(j)), new ArrayList<>());
-        for (Map.Entry<String, User> entry : this.mapUsers.entrySet()) {
-            String username = entry.getKey();
-            Location loc = entry.getValue().getLastLoc();
-            Collection<String> usersLoc = map.get(loc);
-            if (usersLoc != null) usersLoc.add(username);
+    public Map<Location, Collection<String>> loadMap(int n, boolean privilege) {
+        try {
+            rlock.lock();
+            Map<Location, Collection<String>> map = new TreeMap<>(); //comparator!
+            if (privilege) {
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                        map.put(new Location(String.valueOf(i), String.valueOf(j)), new ArrayList<>());
+                for (Map.Entry<String, User> entry : this.mapUsers.entrySet()) {
+                    String username = entry.getKey();
+                    Location loc = entry.getValue().getLastLoc();
+                    Collection<String> usersLoc = map.get(loc);
+                    if (usersLoc != null) usersLoc.add(username);
+                }
+            }
+            return map;
+        } finally {
+            rlock.unlock();
         }
-        return map;
     }
 }

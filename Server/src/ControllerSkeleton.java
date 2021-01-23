@@ -2,7 +2,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Collection;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * A classe ControllerSkeleton serve como um middleware que decide a qual dos
@@ -13,10 +12,12 @@ import java.util.TreeMap;
  * Por isso, esta classe está preparada para uma eventual expansão de código.
  */
 public class ControllerSkeleton implements Skeleton {
-    private final Controller controller;
+    private final UsersController userscontroller;
+    private final RegisterUsers regUsers;
 
-    public ControllerSkeleton(Controller controller) {
-        this.controller = controller;
+    public ControllerSkeleton(UsersController controller, RegisterUsers regUsers) {
+        this.userscontroller = controller;
+        this.regUsers = regUsers;
     }
 
     @Override
@@ -28,12 +29,15 @@ public class ControllerSkeleton implements Skeleton {
                     String name = dis.readUTF();
                     String pw = dis.readUTF();
                     boolean privileged = dis.readBoolean();
-                    this.controller.register(name, pw, privileged);
+                    boolean suc = this.userscontroller.register(name, pw, privileged);
+                    if (suc) this.regUsers.createEntry(name);
+                    dos.writeBoolean(suc);
+                    dos.flush();
                     break;
                 case "login":
                     String username = dis.readUTF();
                     String password = dis.readUTF();
-                    boolean success = this.controller.login(username, password);
+                    boolean success = this.userscontroller.login(username, password);
                     dos.writeBoolean(success);
                     dos.flush();
                     break;
@@ -41,12 +45,14 @@ public class ControllerSkeleton implements Skeleton {
                     String n = dis.readUTF();
                     String locX = dis.readUTF();
                     String locY = dis.readUTF();
-                    this.controller.addLocalizacao(n, new Location(locX, locY));
+                    Location loc = new Location(locX, locY);
+                    this.userscontroller.addLocalizacao(n, loc);
+                    Collection<String> regUsers = this.userscontroller.getNewRegUsers(loc);
                     break;
                 case "how many people in location":
                     String x = dis.readUTF();
                     String y = dis.readUTF();
-                    int number = this.controller.getNumberInLoc(new Location(x, y));
+                    int number = this.userscontroller.getNumberInLoc(new Location(x, y));
                     dos.writeInt(number);
                     dos.flush();
                     break;
@@ -57,8 +63,7 @@ public class ControllerSkeleton implements Skeleton {
                     boolean privilege = dis.readBoolean();
                     int num = dis.readInt();
                     Map<Location, Collection<String>> map;
-                    if (privilege) {
-                        map = this.controller.loadMap(num);
+                        map = this.userscontroller.loadMap(num, privilege);
                         for (Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
                             dos.writeBoolean(true);
                             dos.writeUTF(entry.getKey().getCoordX());
@@ -69,7 +74,6 @@ public class ControllerSkeleton implements Skeleton {
                         }
                         dos.writeBoolean(false);
                         dos.flush();
-                    }
                     break;
                 case "exit":
                     cont = false;
