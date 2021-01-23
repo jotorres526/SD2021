@@ -143,15 +143,5 @@ public class User {
     public boolean locEquals(Location l) {
         return this.getLastLoc().equals(l);
     }
-
-    public static void main(String[] args) throws IOException {
-        try {
-            Stub stub = new Stub(); //TODO acabar main do User
-            System.out.println("AAA");
-            stub.logout();
-        } catch (ConnectException c) {
-            System.out.println("Connection refused! Server is sleeping...");
-        }
-    }
 }
 

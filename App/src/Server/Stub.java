@@ -69,9 +69,9 @@ public class Stub {
         return r;
     }
 
-    /**
+    /*
      * Dá logout no User
-    **/
+
     public void logout() {
         try {
             this.dos.writeUTF("exit");
@@ -80,7 +80,7 @@ public class Stub {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     /**
      * Usado caso o stub não tenha conseguido estabelecer conexão.

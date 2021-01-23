@@ -49,7 +49,7 @@ public class Prompt {
                     cont = false;
                     break;
                 case "login" :
-                    login();
+                    boolean suc = login();
                     break;
                 case "help" :
                     System.out.println("Lista de comandos:");
