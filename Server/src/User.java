@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 public class User {
     private String username;
     private String password;
+    private boolean privileged;
     // TODO: Encapsulamento
     private ArrayList<Location> location;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -17,12 +19,14 @@ public class User {
     public User() {
         this.username = "";
         this.password = "";
+        this.privileged = false;
         this.location = new ArrayList<>();
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, boolean privileged) {
         this.username = username;
         this.password = password;
+        this.privileged = privileged;
         this.location = new ArrayList<>();
     }
 
@@ -111,6 +115,14 @@ public class User {
         } finally {
             rlock.unlock();
         }
+    }
+
+    /**
+     * Obtém a localização mais atual
+     * @return localização mais atual
+     */
+    public Location getLastLoc() {
+        return this.location.get(0);
     }
 
     public static void main(String[] args) throws IOException {

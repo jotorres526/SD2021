@@ -1,5 +1,8 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A classe ControllerSkeleton serve como um middleware que decide a qual dos
@@ -24,7 +27,8 @@ public class ControllerSkeleton implements Skeleton {
                 case "register":
                     String name = dis.readUTF();
                     String pw = dis.readUTF();
-                    this.controller.register(name, pw);
+                    boolean privileged = dis.readBoolean();
+                    this.controller.register(name, pw, privileged);
                     break;
                 case "login":
                     String username = dis.readUTF();
@@ -49,7 +53,23 @@ public class ControllerSkeleton implements Skeleton {
                 //TODO terminar queries
                 case "communicate infection": //para além de comunicar, avisar todos os users que já tiveram na loc do User
                     break;
-                case "load map": //aqui talvez podemos add um boolean no User que diz se ele é especial pra ter acesso
+                case "load map":
+                    boolean privilege = dis.readBoolean();
+                    int num = dis.readInt();
+                    Map<Location, Collection<String>> map;
+                    if (privilege) {
+                        map = this.controller.loadMap(num);
+                        for (Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
+                            dos.writeBoolean(true);
+                            dos.writeUTF(entry.getKey().getCoordX());
+                            dos.writeUTF(entry.getKey().getCoordY());
+                            dos.writeInt(entry.getValue().size());
+                            for (String user : entry.getValue())
+                                dos.writeUTF(user);
+                        }
+                        dos.writeBoolean(false);
+                        dos.flush();
+                    }
                     break;
                 case "exit":
                     cont = false;
