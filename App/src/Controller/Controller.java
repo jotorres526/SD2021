@@ -1,3 +1,7 @@
+package Controller;
+
+import User.*;
+
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

@@ -1,11 +1,8 @@
-import java.io.IOException;
-import java.net.ConnectException;
+package User;
+
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 public class User {
     private String username;
@@ -137,16 +134,6 @@ public class User {
         for (Location location : this.location)
             if (location.equals(l)) return true;
         return false;
-    }
-
-    public static void main(String[] args) throws IOException {
-        try {
-            Stub stub = new Stub(); //TODO acabar main do User
-            System.out.println("AAA");
-            stub.logout();
-        } catch (ConnectException c) {
-            System.out.println("Connection refused! Server is sleeping...");
-        }
     }
 }
 

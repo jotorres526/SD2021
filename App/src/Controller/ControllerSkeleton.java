@@ -1,3 +1,7 @@
+package Controller;
+
+import User.Location;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Collection;
