@@ -1,3 +1,5 @@
+package Controller;
+
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -74,10 +76,15 @@ public class RegisterUsers {
     }
 
     public void createNewRegisters(Collection<String> list) {
-        for (String s : list) {
-            Set<String> set = this.map.get(s);
-            for (String user : list)
-                if (!user.equals(s)) set.add(user);
+        try {
+            wlock.lock();
+            for (String s : list) {
+                Set<String> set = this.map.get(s);
+                for (String user : list)
+                    if (!user.equals(s)) set.add(user);
+            }
+        } finally {
+            wlock.unlock();
         }
     }
 

@@ -1,16 +1,20 @@
+package Server;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
+import User.Location;
+
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Classe Stub
+ * Classe Server.Stub
  * Tem o propósito de criar uma conexão com o Servidor.
- * Sempre que algum User fizer uma query, o Stub irá enviar os dados
- * necessários e, de seguida, irá receber a resposta do Server e
- * retorná-la ao User correspondente.
+ * Sempre que algum User.User fizer uma query, o Server.Stub irá enviar os dados
+ * necessários e, de seguida, irá receber a resposta do Server.Server e
+ * retorná-la ao User.User correspondente.
  */
 public class Stub {
     private final DataOutputStream dos;
@@ -24,37 +28,50 @@ public class Stub {
     }
 
     /**
-     * Registo de um User no Map
+     * Registo de um User.User no Map
      * @param user username
      * @param pw password
-     * @throws IOException exceção
+     * @param priv true caso seja acessos privilegiados, false caso contrário
+     * @return true caso o registo tenha sido bem sucedido, false caso contrário
      */
-    public boolean register(String user, String pw) throws IOException {
-        this.dos.writeUTF("register");
-        this.dos.writeUTF(user);
-        this.dos.writeUTF(pw);
-        this.dos.flush();
-        return this.dis.readBoolean();
+    public boolean register(String user, String pw, boolean priv) {
+        boolean res = false;
+        try {
+            this.dos.writeUTF("register");
+            this.dos.writeUTF(user);
+            this.dos.writeUTF(pw);
+            this.dos.writeBoolean(priv);
+            this.dos.flush();
+            res = this.dis.readBoolean();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 
     /**
-     * Autenticação de um User
+     * Autenticação de um User.User
      * @param user username
      * @param pw password
      * @return true caso a autenticação seja bem sucedida, false em caso contrário
-     * @throws IOException exceção
      */
-    public boolean login(String user, String pw) throws IOException {
-        this.dos.writeUTF("login");
-        this.dos.writeUTF(user);
-        this.dos.writeUTF(pw);
-        this.dos.flush();
-        return this.dis.readBoolean();
+    public boolean login(String user, String pw) {
+        boolean r = false;
+        try {
+            this.dos.writeUTF("login");
+            this.dos.writeUTF(user);
+            this.dos.writeUTF(pw);
+            this.dos.flush();
+            r = this.dis.readBoolean();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return r;
     }
 
     /**
      * Dá logout no User
-     */
+    **/
     public void logout() {
         try {
             this.dos.writeUTF("exit");
@@ -64,21 +81,38 @@ public class Stub {
             e.printStackTrace();
         }
     }
+
     /**
-     * Atualiza a localização de um User
+     * Usado caso o stub não tenha conseguido estabelecer conexão.
+     * Destroi o socket criado.
+     */
+    public void killStub() {
+        try {
+            this.dos.writeUTF("exit");
+            this.dos.flush();
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * Atualiza a localização de um User.User
      * @param user username
      * @param locX primeiro parâmetro da localização, sendo que uma localização
      *             corresponde a um par (x,y)
      * @param locY segundo parâmetro da localização, sendo que uma localização
      *             corresponde a um par (x,y)
-     * @throws IOException exceção
      */
-    public void changeLoc(String user, String locX, String locY) throws IOException {
-        this.dos.writeUTF("change location");
-        this.dos.writeUTF(user);
-        this.dos.writeUTF(locX);
-        this.dos.writeUTF(locY);
-        this.dos.flush();
+    public void changeLoc(String user, String locX, String locY) {
+        try {
+            this.dos.writeUTF("change location");
+            this.dos.writeUTF(user);
+            this.dos.writeUTF(locX);
+            this.dos.writeUTF(locY);
+            this.dos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -88,13 +122,18 @@ public class Stub {
      * @param locY segundo parâmetro da localização, sendo que uma localização
      *             corresponde a um par (x,y)
      * @return número de pessoas situadas numa dada localização
-     * @throws IOException exceção
      */
-    public int howManyInLocation(String locX, String locY) throws IOException {
-        this.dos.writeUTF("how many people in location");
-        this.dos.writeUTF(locX);
-        this.dos.writeUTF(locY);
-        return this.dis.readInt();
+    public int howManyInLocation(String locX, String locY) {
+        int r = 0;
+        try {
+            this.dos.writeUTF("how many people in location");
+            this.dos.writeUTF(locX);
+            this.dos.writeUTF(locY);
+            r = this.dis.readInt();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return r;
     }
 
     /**
@@ -140,5 +179,5 @@ public class Stub {
         return map;
     }
 
-    //TODO queries restantes no Stub
+    //TODO queries restantes no Server.Stub
 }

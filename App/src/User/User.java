@@ -1,11 +1,12 @@
+package User;
+
+import Server.Stub;
+
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 public class User {
     private String username;
@@ -120,7 +121,7 @@ public class User {
 
     /**
      * Obtém a localização mais atual
-     * @return localização mais atual
+     * @return localização
      */
     public Location getLastLoc() {
         return this.location.get(0);

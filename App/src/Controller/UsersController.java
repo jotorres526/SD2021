@@ -1,3 +1,8 @@
+package Controller;
+
+import User.User;
+import User.Location;
+
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -18,8 +23,18 @@ public class UsersController {
         this.mapUsers = new TreeMap<>();
     }
 
+    /**
+     * Verifica se o utilizador já existe no map
+     * @param user username
+     * @return true caso o utilizador já exista, false caso contrário
+     */
     public boolean existsUser(String user) {
-        return this.mapUsers.get(user) != null;
+        try {
+            rlock.lock();
+            return this.mapUsers.get(user) != null;
+        } finally {
+            rlock.unlock();
+        }
     }
 
     /**
