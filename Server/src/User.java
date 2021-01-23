@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -125,10 +126,27 @@ public class User {
         return this.location.get(0);
     }
 
+    /**
+     * A partir de uma localização de um outroUser infetado, verifica se
+     * este User já passou por essa localização
+     * @param l localização
+     * @return true caso já tenha passado por essa localização, false
+     * caso contrário
+     */
+    public boolean locEqualsInfected(Location l) {
+        for (Location location : this.location)
+            if (location.equals(l)) return true;
+        return false;
+    }
+
     public static void main(String[] args) throws IOException {
-        Stub stub = new Stub(); //TODO acabar main do User
-        System.out.println("AAA");
-        stub.logout();
+        try {
+            Stub stub = new Stub(); //TODO acabar main do User
+            System.out.println("AAA");
+            stub.logout();
+        } catch (ConnectException c) {
+            System.out.println("Connection refused! Server is sleeping...");
+        }
     }
 }
 
