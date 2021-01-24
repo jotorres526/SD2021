@@ -59,6 +59,7 @@ public class Location {
     }
 
     public boolean isInLimit(int limit) {
-        return Integer.parseInt(this.coordX) <= limit && Integer.parseInt(this.coordY) <= limit;
+        return Integer.parseInt(this.coordX) <= limit && Integer.parseInt(this.coordY) <= limit &&
+                Integer.parseInt(this.coordX) >= 0 && Integer.parseInt(this.coordY) >= 0;
     }
 }

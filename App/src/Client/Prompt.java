@@ -2,6 +2,7 @@ package Client;
 
 import Server.Stub;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Prompt {
@@ -82,11 +83,45 @@ public class Prompt {
         return sucLogin;
     }
 
-    public void changeLoc() { //fazer parse
-        Scanner s = new Scanner(System.in);
-        String loc, locX, locY;
-        System.out.println("Para que localização se pretende deslocar? (Responda p.ex: 1 1)");
-        loc = s.nextLine();
+    /**
+     * Verifica se uma String corresponde a um inteiro
+     * @param s String
+     * @return true caso s corresponda a um inteiro,
+     * false caso contrário
+     */
+    public boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Atualiza a localização de um User
+     * @param user username
+     * @return
+     */
+    public boolean changeLoc(String user) { //fazer parse
+        boolean res = false;
+        try {
+            Scanner s = new Scanner(System.in);
+            String[] loc;
+            String answer, locX, locY;
+            System.out.println("Para que localização se pretende deslocar? (Responda p.ex: 1 1)");
+            answer = s.nextLine();
+            loc = answer.split(" ");
+            locX = loc[0];
+            locY = loc[1];
+            if (!isInteger(locX) || !isInteger(locY) || loc[2] != null) System.out.println("Valores inválidos!");
+            else {
+                res = this.stub.changeLoc(user, locX, locY);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 
     public void display() {
@@ -104,12 +139,16 @@ public class Prompt {
                 }
                 case "registar" -> register();
                 case "login" -> sucLogin = login(sucLogin);
+                case "mudar localizacao" -> {
+                    //boolean r = changeLoc();
+                }
                 case "help" -> {
                     System.out.println("Lista de comandos:");
-                    System.out.println(" - login    -> Autenticação");
-                    System.out.println(" - logout   -> Termina sessão do utilizador");
-                    System.out.println(" - registar -> Regista o utilizador na aplicação");
-                    System.out.println(" - sair     -> Fecha aplicação");
+                    System.out.println(" - login             -> Autenticação");
+                    System.out.println(" - logout            -> Termina sessão do utilizador");
+                    System.out.println(" - registar          -> Regista o utilizador na aplicação");
+                    System.out.println(" - mudar localizacao -> Altera a localização");
+                    System.out.println(" - sair              -> Fecha aplicação");
                 }
                 default -> System.out.println("Comando não encontrado. Escreva 'help' para uma lista de comandos.");
             }
