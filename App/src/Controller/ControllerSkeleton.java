@@ -72,10 +72,10 @@ public class ControllerSkeleton implements Skeleton {
                     String locX = dis.readUTF();
                     String locY = dis.readUTF();
                     Location loc = new Location(locX, locY);
-                    boolean r = this.userscontroller.addLocalizacao(n, loc, limit);
-                    if (r) {
-                        Collection<String> regUsers = this.userscontroller.getNewRegUsers(loc);
-                        if (!regUsers.isEmpty()) this.regUsers.createNewRegisters(regUsers);
+                    boolean r = this.userscontroller.setLocalizacao(n, loc, limit);
+                    if (r) { //localização inválida ou user não existe
+                        Collection<String> registo = this.userscontroller.getNewRegUsers(loc);
+                        this.regUsers.createNewRegisters(registo);
                     }
                     dos.writeBoolean(r);
                     dos.flush();
@@ -90,7 +90,7 @@ public class ControllerSkeleton implements Skeleton {
                     Location l = new Location(x,y);
                     int number = -1;
                     if (l.isInLimit(limit)) number = this.userscontroller.getNumberInLoc(new Location(x, y));
-                    dos.writeInt(number);
+                    dos.writeInt(number); //-1 caso a localização seja inválida, >0 caso contrário
                     dos.flush();
                     break;
                 //TODO terminar query de comunicar infeção

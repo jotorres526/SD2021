@@ -90,21 +90,22 @@ public class UsersController {
 
     /**
      * Adiciona uma localizacao à lista de localizacoes
+     * Usa um readLock porque só irá escrever no User e não no Map
      * @param username identificador
      * @param l localizacao
      */
-    public boolean addLocalizacao(String username, Location l, int n) {
+    public boolean setLocalizacao(String username, Location l, int n) {
         try {
-            wlock.lock();
+            rlock.lock();
             boolean success = false;
             User user = this.mapUsers.get(username);
             if (user != null && l.isInLimit(n)) {
-                user.addLocation(l);
+                user.setLocation(l);
                 success = true;
             }
             return success;
         } finally {
-            wlock.unlock();
+            rlock.unlock();
         }
 
     }
@@ -149,7 +150,7 @@ public class UsersController {
                         map.put(new Location(String.valueOf(i), String.valueOf(j)), new ArrayList<>());
                 for (Map.Entry<String, User> entry : this.mapUsers.entrySet()) {
                     String username = entry.getKey();
-                    Location loc = entry.getValue().getLastLoc();
+                    Location loc = entry.getValue().getLocation();
                     Collection<String> usersLoc = map.get(loc);
                     if (usersLoc != null) usersLoc.add(username);
                 }
