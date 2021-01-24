@@ -18,7 +18,7 @@ public class Prompt {
     /**
      * Display do menu de logout
      */
-    public void logout () {
+    public void exit () {
         System.out.println("Dando logout...");
     }
 
@@ -26,14 +26,21 @@ public class Prompt {
      * Display do menu de login
      * @return true caso tenha havido sucesso, false caso contrário
      */
-    public boolean login () {
-        Scanner s = new Scanner(System.in);
-        String user, pw;
-        System.out.print("Introduza o utilizador: ");
-        user = s.nextLine();
-        System.out.print("Introduza a password: ");
-        pw = s.nextLine();
-        return stub.login(user, pw);
+    public boolean login (boolean sucLogin) {
+        if (!sucLogin) {
+            Scanner s = new Scanner(System.in);
+            String user, pw;
+            boolean res;
+            System.out.print("Introduza o utilizador: ");
+            user = s.nextLine();
+            System.out.print("Introduza a password: ");
+            pw = s.nextLine();
+            res = stub.login(user, pw);
+            if (res) System.out.println("Autenticação bem sucedida!");
+            else System.out.println("O username ou a password não estão corretos...");
+            sucLogin = true;
+        } else System.out.println("Já se encontra autenticado!");
+        return sucLogin;
     }
 
     /**
@@ -58,38 +65,53 @@ public class Prompt {
         else System.out.println("Ups! Esse username já existe...");
     }
 
-    public void changeLoc() { //por acabar
+    /**
+     * Um User sai da sua conta de utilizador
+     * @param sucLogin true caso o User se tenha autenticado, false
+     *                 caso contrário
+     * @return false caso o logout tenha sido bem sucedido, true caso
+     * o User não tenha estado autenticado e por isso não conseguirá
+     * fazer logout
+     */
+    public boolean logout(boolean sucLogin) {
+        if (sucLogin) {
+            System.out.println("Saindo...");
+            sucLogin = false;
+        }
+        else System.out.println("De momento, não se encontra autenticado...");
+        return sucLogin;
+    }
+
+    public void changeLoc() { //fazer parse
         Scanner s = new Scanner(System.in);
-        String loc;
+        String loc, locX, locY;
         System.out.println("Para que localização se pretende deslocar? (Responda p.ex: 1 1)");
         loc = s.nextLine();
     }
 
     public void display() {
-        boolean cont = true;
+        boolean cont = true, sucLogin = false;
         Scanner s = new Scanner(System.in);
         System.out.println("Conexão estabelecida! Escreva help caso necessite de ajuda...");
         while (cont) {
             System.out.print("> ");
             String input = s.nextLine();
             switch (input) {
-                case "logout" :
-                    logout();
+                case "logout" -> sucLogin = logout(sucLogin);
+                case "sair" -> {
+                    exit();
                     cont = false;
-                    break;
-                case "registar":
-                    register();
-                    break;
-                case "login" :
-                    boolean suc = login();
-                    break;
-                case "help" :
+                }
+                case "registar" -> register();
+                case "login" -> sucLogin = login(sucLogin);
+                case "help" -> {
                     System.out.println("Lista de comandos:");
-                    System.out.println(" - logout -> Termina sessão do utilizador");
+                    System.out.println(" - login    -> Autenticação");
+                    System.out.println(" - logout   -> Termina sessão do utilizador");
                     System.out.println(" - registar -> Regista o utilizador na aplicação");
-                    break;
-                default :
-                    System.out.println("Comando não encontrado. Escreva 'help' para uma lista de comandos.");
+                    System.out.println(" - sair     -> Fecha aplicação");
+                }
+                default -> System.out.println("Comando não encontrado. Escreva 'help' para uma lista de comandos.");
             }
         }
     }

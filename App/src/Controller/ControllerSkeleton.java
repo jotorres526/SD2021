@@ -71,9 +71,14 @@ public class ControllerSkeleton implements Skeleton {
                     String locX = dis.readUTF();
                     String locY = dis.readUTF();
                     Location loc = new Location(locX, locY);
-                    this.userscontroller.addLocalizacao(n, loc);
-                    Collection<String> regUsers = this.userscontroller.getNewRegUsers(loc);
-                    if (!regUsers.isEmpty()) this.regUsers.createNewRegisters(regUsers);
+                    int limit = 10;
+                    boolean r = this.userscontroller.addLocalizacao(n, loc, limit);
+                    if (r) {
+                        Collection<String> regUsers = this.userscontroller.getNewRegUsers(loc);
+                        if (!regUsers.isEmpty()) this.regUsers.createNewRegisters(regUsers);
+                    }
+                    dos.writeBoolean(r);
+                    dos.flush();
                     break;
                 /*
                  * Quantas pessoas estão numa determinada localização:

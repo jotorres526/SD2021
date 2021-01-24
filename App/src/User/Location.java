@@ -33,7 +33,6 @@ public class Location {
         Location location = (Location) o;
         return Objects.equals(coordX, location.coordX) && Objects.equals(coordY, location.coordY);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(coordX, coordY);
@@ -57,5 +56,9 @@ public class Location {
 
     public Location clone() {
         return new Location(this);
+    }
+
+    public boolean isInLimit(int limit) {
+        return Integer.parseInt(this.coordX) <= limit && Integer.parseInt(this.coordY) <= limit;
     }
 }
