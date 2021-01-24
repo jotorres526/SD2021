@@ -36,6 +36,35 @@ public class Prompt {
         return stub.login(user, pw);
     }
 
+    /**
+     * Display de registo de um utilizador
+     * caso contrário
+     */
+    public void register() {
+        Scanner s = new Scanner(System.in);
+        String user, pw, answer;
+        boolean privileged, ret;
+        System.out.println("Introduza o seu username: ");
+        user = s.nextLine();
+        System.out.println("Introduza a password: ");
+        pw = s.nextLine();
+        do {
+            System.out.println("É um utilizador Premium? (s/n)");
+            answer = s.nextLine();
+        } while (!answer.equals("s") && !answer.equals("n"));
+        privileged = answer.equals("s");
+        ret = stub.register(user, pw, privileged);
+        if (ret) System.out.println("Registo completo!");
+        else System.out.println("Ups! Esse username já existe...");
+    }
+
+    public void changeLoc() { //por acabar
+        Scanner s = new Scanner(System.in);
+        String loc;
+        System.out.println("Para que localização se pretende deslocar? (Responda p.ex: 1 1)");
+        loc = s.nextLine();
+    }
+
     public void display() {
         boolean cont = true;
         Scanner s = new Scanner(System.in);
@@ -48,12 +77,16 @@ public class Prompt {
                     logout();
                     cont = false;
                     break;
+                case "registar":
+                    register();
+                    break;
                 case "login" :
                     boolean suc = login();
                     break;
                 case "help" :
                     System.out.println("Lista de comandos:");
                     System.out.println(" - logout -> Termina sessão do utilizador");
+                    System.out.println(" - registar -> Regista o utilizador na aplicação");
                     break;
                 default :
                     System.out.println("Comando não encontrado. Escreva 'help' para uma lista de comandos.");
