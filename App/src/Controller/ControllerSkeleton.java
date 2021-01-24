@@ -85,11 +85,14 @@ public class ControllerSkeleton implements Skeleton {
                  * Retorna o número de pessoas numa localização
                  */
                 case "how many people in location":
+                    System.out.println("sss");
                     String x = dis.readUTF();
                     String y = dis.readUTF();
                     Location l = new Location(x,y);
                     int number = -1;
+                    System.out.println("assim");
                     if (l.isInLimit(limit)) number = this.userscontroller.getNumberInLoc(new Location(x, y));
+                    System.out.println("aqui");
                     dos.writeInt(number); //-1 caso a localização seja inválida, >0 caso contrário
                     dos.flush();
                     break;

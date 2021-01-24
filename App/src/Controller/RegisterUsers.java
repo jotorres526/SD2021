@@ -21,7 +21,7 @@ public class RegisterUsers {
         this.map = new HashMap<>();
     }
 
-    public void addUserToList(String user, String newUser) {
+    public void addUserToList(String user, String newUser) { //INÚTIL
         try {
             wlock.lock();
             Collection<String> list = this.map.get(user);
@@ -46,7 +46,7 @@ public class RegisterUsers {
      * @param user username de um determinado User
      * @return lista de usernames que já entraram em contacto com o user
      */
-    public Collection<String> getListUser(String user) {
+    public Collection<String> getListUser(String user) { //WILL BE NEEDED para a de comunicar infeção
         try {
             rlock.lock();
             Collection<String> col = new ArrayList<>();

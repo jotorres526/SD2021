@@ -1,8 +1,11 @@
 package Client;
 
 import Server.Stub;
+import User.Location;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Prompt {
@@ -27,10 +30,11 @@ public class Prompt {
      * Display do menu de login
      * @return true caso tenha havido sucesso, false caso contrário
      */
-    public boolean login (boolean sucLogin) {
+    public String login (boolean sucLogin) {
+        String user = null;
         if (!sucLogin) {
             Scanner s = new Scanner(System.in);
-            String user, pw;
+            String pw;
             boolean res;
             System.out.print("Introduza o utilizador: ");
             user = s.nextLine();
@@ -41,29 +45,7 @@ public class Prompt {
             else System.out.println("O username ou a password não estão corretos...");
             sucLogin = true;
         } else System.out.println("Já se encontra autenticado!");
-        return sucLogin;
-    }
-
-    /**
-     * Display de registo de um utilizador
-     * caso contrário
-     */
-    public void register() {
-        Scanner s = new Scanner(System.in);
-        String user, pw, answer;
-        boolean privileged, ret;
-        System.out.println("Introduza o seu username: ");
-        user = s.nextLine();
-        System.out.println("Introduza a password: ");
-        pw = s.nextLine();
-        do {
-            System.out.println("É um utilizador Premium? (s/n)");
-            answer = s.nextLine();
-        } while (!answer.equals("s") && !answer.equals("n"));
-        privileged = answer.equals("s");
-        ret = stub.register(user, pw, privileged);
-        if (ret) System.out.println("Registo completo!");
-        else System.out.println("Ups! Esse use                                                                                          rname já existe...");
+        return user;
     }
 
     /**
@@ -101,9 +83,8 @@ public class Prompt {
     /**
      * Atualiza a localização de um User
      * @param user username
-     * @return
      */
-    public boolean changeLoc(String user) { //fazer parse
+    public void changeLoc(String user) { //fazer parse
         boolean res = false;
         try {
             Scanner s = new Scanner(System.in);
@@ -114,12 +95,14 @@ public class Prompt {
             loc = answer.split(" ");
             locX = loc[0];
             locY = loc[1];
-            if (isNotInteger(locX) || isNotInteger(locY) || loc[2] != null) System.out.println("Valores inválidos!");
+            if (isNotInteger(locX) || isNotInteger(locY) || locX == null || locY == null)
+                System.out.println("Os valores da localização são 2 e têm de ser inteiros...");
             else res = this.stub.changeLoc(user, locX, locY);
+            if (res) System.out.println("Atualização bem sucedida!");
+            else System.out.println("Essa localização é inválida. Relembre-se que a localização está entre (0,0) e (10,10)");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return res;
     }
 
     /**
@@ -140,9 +123,11 @@ public class Prompt {
         loc = answer.split(" ");
         locX = loc[0];
         locY = loc[1];
-        if (isNotInteger(locX) || isNotInteger(locY) || loc[2] != null) System.out.println("Valores inválidos!");
+        if (isNotInteger(locX) || isNotInteger(locY) || locX == null || locY == null)
+            System.out.println("Valores inválidos!");
         else {
             number = this.stub.howManyInLocation(locX, locY);
+            System.out.println("oooo");
             if (number > 1) {
                 System.out.println("Estão neste momento " + number + " pessoas em (" + locX + "," + locY + ")");
                 System.out.println("Pretende deslocar-se para lá? (s/n)");
@@ -154,8 +139,24 @@ public class Prompt {
         }
     }
 
-    public void display() {
-        boolean cont = true, sucLogin = false;
+    public void loadMapa(boolean privileged, int n) throws IOException {
+        Map<Location, Collection<String>> map = this.stub.loadMap(privileged, n);
+        if (!map.isEmpty()) {
+            for(Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
+                Collection<String> list = entry.getValue();
+                System.out.println("Localização " + entry.getKey().toString() + ": ");
+                if (list.isEmpty()) System.out.println("Vazia");
+                for(String s : list)
+                    System.out.println("User: " + s);
+            }
+        } else System.out.println("Não tem permissões para ter acesso ao mapa!");
+
+    }
+
+    public void display() throws IOException {
+        boolean cont = true, sucLogin = false, privileged = false;
+        String username = null;
+        int limit = 10;
         Scanner s = new Scanner(System.in);
         System.out.println("Conexão estabelecida! Escreva help caso necessite de ajuda...");
         while (cont) {
@@ -167,22 +168,44 @@ public class Prompt {
                     exit();
                     cont = false;
                 }
-                case "registar" -> register();
-                case "login" -> sucLogin = login(sucLogin);
-                case "mudar localizacao" -> {
-                    //boolean r = changeLoc();
+                case "registar" -> {
+                    String user, pw, answer;
+                    boolean ret;
+                    System.out.println("Introduza o seu username: ");
+                    user = s.nextLine();
+                    System.out.println("Introduza a password: ");
+                    pw = s.nextLine();
+                    do {
+                        System.out.println("É um utilizador Premium? (s/n)");
+                        answer = s.nextLine();
+                    } while (!answer.equals("s") && !answer.equals("n"));
+                    privileged = answer.equals("s");
+                    ret = stub.register(user, pw, privileged);
+                    if (ret) System.out.println("Registo completo!");
+                    else System.out.println("Ups! Esse username já existe...");
+                }
+                case "login" -> {
+                    username = login(sucLogin);
+                    if (username != null) sucLogin = true;
+                }
+                case "atualizar localizacao" -> {
+                    if (sucLogin) changeLoc(username);
                 }
                 case "quantas pessoas" -> {
-
+                    if (sucLogin) howManyInLoc(username);
+                }
+                case "carregar mapa" -> {
+                    if (sucLogin) loadMapa(privileged, limit);
                 }
                 case "help" -> {
                     System.out.println("Lista de comandos:");
-                    System.out.println(" - login             -> Autenticação");
-                    System.out.println(" - logout            -> Termina sessão do utilizador");
-                    System.out.println(" - registar          -> Regista o utilizador na aplicação");
-                    System.out.println(" - mudar localizacao -> Altera a localização");
-                    System.out.println(" - quantas pessoas   -> Diz quantas pessoas se encontram numa determinada localização");
-                    System.out.println(" - sair              -> Fecha aplicação");
+                    System.out.println(" - login                 -> Autenticação");
+                    System.out.println(" - logout                -> Termina sessão do utilizador");
+                    System.out.println(" - registar              -> Regista o utilizador na aplicação");
+                    System.out.println(" - atualizar localizacao -> Altera a localização");
+                    System.out.println(" - quantas pessoas       -> Diz quantas pessoas se encontram numa determinada localização");
+                    System.out.println(" - carregar mapa         -> Carrega o Mapa com todas as localizações e utilizadores associados");
+                    System.out.println(" - sair                  -> Fecha aplicação");
                 }
                 default -> System.out.println("Comando não encontrado. Escreva 'help' para uma lista de comandos.");
             }

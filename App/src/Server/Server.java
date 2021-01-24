@@ -12,7 +12,7 @@ import java.net.Socket;
  * género mas com outras aplicabilidades, apenas será necessário inserir um novo
  * Controller.Controller no map, não havendo alterações significativas no código.
  */
-public class Server { //todo delimitar a grelha (NxN)
+public class Server {
     public static void main(String[] args) throws Exception {
         Skeleton skeleton = new ControllerSkeleton(new UsersController(), new RegisterUsers());
         var ss = new ServerSocket(12345);

@@ -38,7 +38,8 @@ public class UsersController {
     }
 
     /**
-     * Regista um User no Map
+     * Regista um User no Map apenas se o username não seja igual
+     * ao de outro User
      * @param name username
      * @param pw password
      */
