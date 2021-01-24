@@ -40,6 +40,12 @@ public class RegisterUsers {
         }
     }
 
+    /**
+     * Retorna a lista de todos os User que já entraram em contacto
+     * com um determinado User
+     * @param user username de um determinado User
+     * @return lista de usernames que já entraram em contacto com o user
+     */
     public Collection<String> getListUser(String user) {
         try {
             rlock.lock();
@@ -52,6 +58,7 @@ public class RegisterUsers {
         }
     }
 
+    /*
     public boolean existsKeyUser(String user) { //inútil
         try {
             rlock.lock();
@@ -59,8 +66,9 @@ public class RegisterUsers {
         } finally {
             rlock.unlock();
         }
-    }
+    }*/
 
+    /*
     public boolean addUser(String user) { //inútil
         try {
             wlock.lock();
@@ -73,8 +81,14 @@ public class RegisterUsers {
         } finally {
             wlock.unlock();
         }
-    }
+    }*/
 
+    /**
+     * Quando um User muda de localização, poderá entrar em contacto com
+     * novos Users, e por isso é necessário que esses registos sejam
+     * atualizados
+     * @param list lista de Users que estão numa certa localização
+     */
     public void createNewRegisters(Collection<String> list) {
         try {
             wlock.lock();

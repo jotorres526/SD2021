@@ -39,7 +39,7 @@ public class Prompt {
     public void display() {
         boolean cont = true;
         Scanner s = new Scanner(System.in);
-        System.out.println("Conexão estabelecida!");
+        System.out.println("Conexão estabelecida! Escreva help caso necessite de ajuda...");
         while (cont) {
             System.out.print("> ");
             String input = s.nextLine();

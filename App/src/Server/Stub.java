@@ -179,5 +179,5 @@ public class Stub {
         return map;
     }
 
-    //TODO queries restantes no Server.Stub
+    //TODO query de comunicar infeção
 }

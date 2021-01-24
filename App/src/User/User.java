@@ -140,6 +140,11 @@ public class User {
         return false;
     }
 
+    /**
+     * Verifica se uma dada localização é igual à mais atual
+     * @param l localização
+     * @return true caso seja igual, false caso contrário
+     */
     public boolean locEquals(Location l) {
         return this.getLastLoc().equals(l);
     }
