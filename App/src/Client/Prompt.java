@@ -26,6 +26,24 @@ public class Prompt {
         System.out.println("Dando logout...");
     }
 
+    public void registar() {
+        String user, pw, answer;
+        boolean ret, privileged;
+        Scanner s = new Scanner(System.in);
+        System.out.println("Introduza o seu username: ");
+        user = s.nextLine();
+        System.out.println("Introduza a password: ");
+        pw = s.nextLine();
+        do {
+            System.out.println("É um utilizador Premium? (s/n)");
+            answer = s.nextLine();
+        } while (!answer.equals("s") && !answer.equals("n"));
+        privileged = answer.equals("s");
+        ret = stub.register(user, pw, privileged);
+        if (ret) System.out.println("Registo completo!");
+        else System.out.println("Ups! Esse username já existe...");
+    }
+
     /**
      * Display do menu de login
      * @return true caso tenha havido sucesso, false caso contrário
@@ -149,7 +167,7 @@ public class Prompt {
                 for(String s : list)
                     System.out.println("User: " + s);
             }
-        } else System.out.println("Não tem permissões para ter acesso ao mapa!");
+        } else System.out.println("Não tem permissões para carregar o mapa!");
 
     }
 
@@ -168,25 +186,20 @@ public class Prompt {
                     exit();
                     cont = false;
                 }
-                case "registar" -> {
-                    String user, pw, answer;
-                    boolean ret;
-                    System.out.println("Introduza o seu username: ");
-                    user = s.nextLine();
-                    System.out.println("Introduza a password: ");
-                    pw = s.nextLine();
-                    do {
-                        System.out.println("É um utilizador Premium? (s/n)");
-                        answer = s.nextLine();
-                    } while (!answer.equals("s") && !answer.equals("n"));
-                    privileged = answer.equals("s");
-                    ret = stub.register(user, pw, privileged);
-                    if (ret) System.out.println("Registo completo!");
-                    else System.out.println("Ups! Esse username já existe...");
-                }
+                case "registar" -> registar();
                 case "login" -> {
-                    username = login(sucLogin);
-                    if (username != null) sucLogin = true;
+                    if (!sucLogin) {
+                        String pw;
+                        boolean res;
+                        System.out.print("Introduza o utilizador: ");
+                        username = s.nextLine();
+                        System.out.print("Introduza a password: ");
+                        pw = s.nextLine();
+                        res = stub.login(username, pw);
+                        if (res) System.out.println("Autenticação bem sucedida!");
+                        else System.out.println("O username ou a password não estão corretos...");
+                        sucLogin = true;
+                    } else System.out.println("Já se encontra autenticado!");
                 }
                 case "atualizar localizacao" -> {
                     if (sucLogin) changeLoc(username);
@@ -194,9 +207,7 @@ public class Prompt {
                 case "quantas pessoas" -> {
                     if (sucLogin) howManyInLoc(username);
                 }
-                case "carregar mapa" -> {
-                    if (sucLogin) loadMapa(privileged, limit);
-                }
+                case "carregar mapa" -> loadMapa(privileged, limit);
                 case "help" -> {
                     System.out.println("Lista de comandos:");
                     System.out.println(" - login                 -> Autenticação");
