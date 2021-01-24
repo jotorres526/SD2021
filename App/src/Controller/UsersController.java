@@ -115,12 +115,17 @@ public class UsersController {
      * @return número de users
      */
     public int getNumberInLoc(Location loc) {
-        int r = 0;
-        for (Map.Entry<String, User> entry : this.mapUsers.entrySet()) {
-            User user = entry.getValue();
-            if (user.isInLocation(loc)) r++;
+        try {
+            rlock.lock();
+            int r = 0;
+            for (Map.Entry<String, User> entry : this.mapUsers.entrySet()) {
+                User user = entry.getValue();
+                if (user.isInLocation(loc)) r++;
+            }
+            return r;
+        } finally {
+            rlock.unlock();
         }
-        return r;
     }
 
     /**
