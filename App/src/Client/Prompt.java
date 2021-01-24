@@ -86,16 +86,16 @@ public class Prompt {
     /**
      * Verifica se uma String corresponde a um inteiro
      * @param s String
-     * @return true caso s corresponda a um inteiro,
+     * @return true caso s corresponda não a um inteiro,
      * false caso contrário
      */
-    public boolean isInteger(String s) {
+    public boolean isNotInteger(String s) {
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException | NullPointerException e) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -114,14 +114,44 @@ public class Prompt {
             loc = answer.split(" ");
             locX = loc[0];
             locY = loc[1];
-            if (!isInteger(locX) || !isInteger(locY) || loc[2] != null) System.out.println("Valores inválidos!");
-            else {
-                res = this.stub.changeLoc(user, locX, locY);
-            }
+            if (isNotInteger(locX) || isNotInteger(locY) || loc[2] != null) System.out.println("Valores inválidos!");
+            else res = this.stub.changeLoc(user, locX, locY);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return res;
+    }
+
+    /**
+     * Quantas pessoas estão numa dada localização
+     * Consoante o resultado, o User pode decidir se se pretende deslocar
+     * ou não
+     * @param user username
+     * @throws IOException exceção
+     */
+    public void howManyInLoc(String user) throws IOException {
+        Scanner s = new Scanner(System.in);
+        String[] loc;
+        String answer, locX, locY;
+        int number;
+        boolean sn;
+        System.out.println("Em que localização pretende saber o número de pessoas? (Responda p.ex: 1 1)");
+        answer = s.nextLine();
+        loc = answer.split(" ");
+        locX = loc[0];
+        locY = loc[1];
+        if (isNotInteger(locX) || isNotInteger(locY) || loc[2] != null) System.out.println("Valores inválidos!");
+        else {
+            number = this.stub.howManyInLocation(locX, locY);
+            if (number > 1) {
+                System.out.println("Estão neste momento " + number + " pessoas em (" + locX + "," + locY + ")");
+                System.out.println("Pretende deslocar-se para lá? (s/n)");
+                answer = s.nextLine();
+                if (answer.equals("s")) sn = this.stub.changeLoc(user, locX, locY);
+            } else if (number == 1) System.out.println("Está neste momento 1 pessoa em (" + locX + "," + locY + ")");
+            else if (number == 0) System.out.println("Não há de momento ninguém nessa localização...");
+            else System.out.println("Essa localização não é válida!");
+        }
     }
 
     public void display() {
@@ -142,12 +172,16 @@ public class Prompt {
                 case "mudar localizacao" -> {
                     //boolean r = changeLoc();
                 }
+                case "quantas pessoas" -> {
+
+                }
                 case "help" -> {
                     System.out.println("Lista de comandos:");
                     System.out.println(" - login             -> Autenticação");
                     System.out.println(" - logout            -> Termina sessão do utilizador");
                     System.out.println(" - registar          -> Regista o utilizador na aplicação");
                     System.out.println(" - mudar localizacao -> Altera a localização");
+                    System.out.println(" - quantas pessoas   -> Diz quantas pessoas se encontram numa determinada localização");
                     System.out.println(" - sair              -> Fecha aplicação");
                 }
                 default -> System.out.println("Comando não encontrado. Escreva 'help' para uma lista de comandos.");
