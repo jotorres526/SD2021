@@ -19,17 +19,7 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        Stub stub = null;
-        boolean isConnected = false;
-        while (!isConnected) {
-            try {
-                stub = new Stub();
-                isConnected = true;
-            } catch (IOException e) {
-                System.out.println("Conexão não estabelecida. Tentando novamente em 5 segundos...");
-                timeout();
-            }
-        }
+        Stub stub = new Stub();
         new Prompt(stub).display();
         stub.killStub();
     }

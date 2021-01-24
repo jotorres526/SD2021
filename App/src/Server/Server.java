@@ -16,7 +16,6 @@ public class Server { //todo delimitar a grelha (NxN)
     public static void main(String[] args) throws Exception {
         Skeleton skeleton = new ControllerSkeleton(new UsersController(), new RegisterUsers());
         var ss = new ServerSocket(12345);
-
         while(true) {
             System.out.println("À espera de conexão");
             Socket s = ss.accept();

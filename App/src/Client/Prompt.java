@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Prompt {
-    private Stub stub;
+    private final Stub stub;
 
     public Prompt() {
-        stub = null;
+        this.stub = new Stub();
     }
 
     public Prompt(Stub stub) {
@@ -63,7 +63,7 @@ public class Prompt {
         privileged = answer.equals("s");
         ret = stub.register(user, pw, privileged);
         if (ret) System.out.println("Registo completo!");
-        else System.out.println("Ups! Esse username já existe...");
+        else System.out.println("Ups! Esse use                                                                                          rname já existe...");
     }
 
     /**

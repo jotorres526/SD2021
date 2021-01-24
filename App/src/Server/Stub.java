@@ -2,10 +2,12 @@ package Server;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import User.Location;
 
+import javax.xml.crypto.Data;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,10 +23,20 @@ public class Stub {
     private final DataInputStream dis;
     private final Socket s;
 
-    public Stub() throws IOException {
-        this.s = new Socket("localhost", 12345);
-        this.dos = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
-        this.dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
+    public Stub() {
+        Socket s = null;
+        DataOutputStream dos = null;
+        DataInputStream dis = null;
+        try {
+            s = new Socket("localhost", 12345);
+            dos = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
+            dis = new DataInputStream(new BufferedInputStream(s.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.s = s;
+        this.dos = dos;
+        this.dis = dis;
     }
 
     /**
