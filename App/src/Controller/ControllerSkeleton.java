@@ -26,6 +26,7 @@ public class ControllerSkeleton implements Skeleton {
 
     @Override
     public void handle(DataInputStream dis, DataOutputStream dos) throws Exception {
+        int limit = 10;
         boolean cont = true;
         while (cont) {
             switch (dis.readUTF()) {
@@ -71,9 +72,13 @@ public class ControllerSkeleton implements Skeleton {
                     String locX = dis.readUTF();
                     String locY = dis.readUTF();
                     Location loc = new Location(locX, locY);
-                    this.userscontroller.addLocalizacao(n, loc);
-                    Collection<String> regUsers = this.userscontroller.getNewRegUsers(loc);
-                    if (!regUsers.isEmpty()) this.regUsers.createNewRegisters(regUsers);
+                    boolean r = this.userscontroller.addLocalizacao(n, loc, limit);
+                    if (r) {
+                        Collection<String> regUsers = this.userscontroller.getNewRegUsers(loc);
+                        if (!regUsers.isEmpty()) this.regUsers.createNewRegisters(regUsers);
+                    }
+                    dos.writeBoolean(r);
+                    dos.flush();
                     break;
                 /*
                  * Quantas pessoas estão numa determinada localização:
@@ -82,7 +87,9 @@ public class ControllerSkeleton implements Skeleton {
                 case "how many people in location":
                     String x = dis.readUTF();
                     String y = dis.readUTF();
-                    int number = this.userscontroller.getNumberInLoc(new Location(x, y));
+                    Location l = new Location(x,y);
+                    int number = -1;
+                    if (l.isInLimit(limit)) number = this.userscontroller.getNumberInLoc(new Location(x, y));
                     dos.writeInt(number);
                     dos.flush();
                     break;

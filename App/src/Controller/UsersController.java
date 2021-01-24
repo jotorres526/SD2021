@@ -93,11 +93,16 @@ public class UsersController {
      * @param username identificador
      * @param l localizacao
      */
-    public void addLocalizacao(String username, Location l) {
+    public boolean addLocalizacao(String username, Location l, int n) {
         try {
             wlock.lock();
+            boolean success = false;
             User user = this.mapUsers.get(username);
-            if (user != null) user.addLocation(l);
+            if (user != null && l.isInLimit(n)) {
+                user.addLocation(l);
+                success = true;
+            }
+            return success;
         } finally {
             wlock.unlock();
         }

@@ -115,7 +115,7 @@ public class Stub {
      * @param locY segundo parâmetro da localização, sendo que uma localização
      *             corresponde a um par (x,y)
      */
-    public void changeLoc(String user, String locX, String locY) {
+    public boolean changeLoc(String user, String locX, String locY) throws IOException {
         try {
             this.dos.writeUTF("change location");
             this.dos.writeUTF(user);
@@ -125,6 +125,7 @@ public class Stub {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return this.dis.readBoolean();
     }
 
     /**
