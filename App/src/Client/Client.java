@@ -1,8 +1,6 @@
 package Client;
 
-
 import Server.Stub;
-
 import java.io.IOException;
 
 public class Client {
