@@ -20,7 +20,7 @@ public class Prompt {
      * Display do menu de logout
      */
     public void exit () {
-        System.out.println("Dando logout...");
+        System.out.println("Desligando aplicação...");
         this.stub.killStub();
     }
 
@@ -71,7 +71,7 @@ public class Prompt {
      */
     public void logout(String user) {
         if (user != null)
-            System.out.println("Saindo...");
+            System.out.println("Terminando sessão...");
         else
             System.out.println("De momento, não se encontra autenticado qualquer utilizador...");
     }
@@ -135,7 +135,8 @@ public class Prompt {
             System.out.print("Localização " + entry.getKey().toString() + ": ");
             if (list.isEmpty()) System.out.println("Vazia");
             for(String s : list)
-                System.out.println("\n - Utilizador: " + s);
+                System.out.print("\n - Utilizador: " + s);
+            if(!list.isEmpty()) System.out.println();
         }
     }
 
@@ -177,6 +178,9 @@ public class Prompt {
         return new Thread(notif);
     }
 
+    /**
+     * Função de IO com o utilizador
+     */
     public void display() {
         boolean cont = true;
         String loggedUser = null;
@@ -238,6 +242,7 @@ public class Prompt {
                         System.out.println("É recomendado entrar em isolamento");
                         logout(loggedUser);
                         loggedUser = null;
+                        t.interrupt();
                     } else System.out.println("Não autenticado");
                 }
                 case "help" -> {
@@ -248,6 +253,8 @@ public class Prompt {
                     System.out.println(" - atualizar localizacao -> Altera a localização");
                     System.out.println(" - quantas pessoas       -> Diz quantas pessoas se encontram numa determinada localização");
                     System.out.println(" - carregar mapa         -> Carrega o Mapa com todas as localizações e utilizadores associados");
+                    System.out.println(" - comunicar infecao     -> Reporta que o utilizador está infetado");
+                    System.out.println(" - verificar localizacao -> Pede à aplicação para notificar o utilizador quando uma localização estiver vazia");
                     System.out.println(" - sair                  -> Fecha aplicação");
                 }
                 default -> System.out.println("Comando não encontrado. Escreva 'help' para uma lista de comandos.");
