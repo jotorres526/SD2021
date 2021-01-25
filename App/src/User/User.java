@@ -1,17 +1,12 @@
 package User;
 
-import Server.Stub;
-
-import java.io.IOException;
-import java.net.ConnectException;
-import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class User {
-    private String username;
-    private String password;
-    private boolean privileged;
+    private final String username;
+    private final String password;
+    private final boolean privileged;
     // TODO: Encapsulamento
     private Location location;
     private boolean infected;
@@ -47,15 +42,30 @@ public class User {
     }
 
     public boolean isPrivileged() {
-        return this.privileged;
+        try {
+            rlock.lock();
+            return this.privileged;
+        } finally {
+            rlock.unlock();
+        }
     }
 
     public boolean isInfected() {
-        return this.infected;
+        try {
+            rlock.lock();
+            return this.infected;
+        } finally {
+            rlock.unlock();
+        }
     }
 
     public void setInfected(boolean infected) {
-        this.infected = infected;
+        try {
+            wlock.lock();
+            this.infected = infected;
+        } finally {
+            wlock.unlock();
+        }
     }
 
     /**
@@ -97,7 +107,12 @@ public class User {
      * @return true caso seja igual, false caso contrário
      */
     public boolean locEquals(Location l) {
-        return this.location.equals(l);
+        try {
+            rlock.lock();
+            return this.location.equals(l);
+        } finally {
+            rlock.unlock();
+        }
     }
 }
 

@@ -2,7 +2,6 @@ package Controller;
 
 import User.User;
 import User.Location;
-
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -19,6 +18,9 @@ public class UsersController {
     private final Lock rlock = lock.readLock();
     private final Lock wlock = lock.writeLock();
 
+    /**
+     * Construtor por omissão da classe Controller
+     */
     public UsersController() {
         this.mapUsers = new TreeMap<>();
     }
@@ -77,6 +79,11 @@ public class UsersController {
 
     }
 
+    /**
+     * Procura no mapa de users os users que estão numa certa localização
+     * @param loc localizacao a procurar
+     * @return uma collection com os identificadores dos users que estão na localização dada
+     */
     public Collection<String> getNewRegUsers(Location loc) {
         try {
             rlock.lock();
@@ -130,6 +137,11 @@ public class UsersController {
         }
     }
 
+    /**
+     * Verifica se um determinadao user é privilegiado
+     * @param user identificador do user em questão
+     * @return true se o user for privilegiado
+     */
     public boolean isUserPrivileged(String user) {
         User u = this.mapUsers.get(user);
         return u != null && u.isPrivileged();

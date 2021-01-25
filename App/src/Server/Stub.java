@@ -2,12 +2,9 @@ package Server;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import User.Location;
-
-import javax.xml.crypto.Data;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -81,19 +78,6 @@ public class Stub {
         return r;
     }
 
-    /*
-     * Dá logout no User
-
-    public void logout() {
-        try {
-            this.dos.writeUTF("exit");
-            this.dos.flush();
-            s.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
     /**
      * Usado caso o stub não tenha conseguido estabelecer conexão.
      * Destroi o socket criado.
@@ -152,6 +136,11 @@ public class Stub {
         return r;
     }
 
+    /**
+     * Verifica se um certo user é privilegiado
+     * @param user identificador do user em questão
+     * @return true se for privilegiado
+     */
     public boolean isUserPrivileged(String user) {
         boolean r = false;
         try {
