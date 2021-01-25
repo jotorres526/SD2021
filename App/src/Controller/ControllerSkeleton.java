@@ -1,7 +1,6 @@
 package Controller;
 
 import User.Location;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Collection;
@@ -19,6 +18,9 @@ public class ControllerSkeleton implements Skeleton {
     private final UsersController userscontroller;
     private final RegisterUsers regUsers;
 
+    /**
+     * Método parametrizado da classe ControllerSkeleton
+     */
     public ControllerSkeleton(UsersController controller, RegisterUsers regUsers) {
         this.userscontroller = controller;
         this.regUsers = regUsers;
