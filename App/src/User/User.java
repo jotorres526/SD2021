@@ -42,11 +42,21 @@ public class User implements Comparable<User> {
     }
 
     public String getUsername() {
-        return this.username;
+        try {
+            rlock.lock();
+            return this.username;
+        } finally {
+            rlock.unlock();
+        }
     }
 
     public String getPassword() {
-        return this.password;
+        try {
+            rlock.lock();
+            return this.password;
+        } finally {
+            rlock.unlock();
+        }
     }
 
     public void setLocation(Location location) {
