@@ -130,6 +130,11 @@ public class UsersController {
         }
     }
 
+    public boolean isUserPrivileged(String user) {
+        User u = this.mapUsers.get(user);
+        return u != null && u.isPrivileged();
+    }
+
     /**
      * Envia o mapa de todas as localizações da grelha
      * Começa por preencher o mapa com todas as localizações
@@ -139,22 +144,19 @@ public class UsersController {
      * @return Mapa em que a chave é a localização e o valor corresponde
      * a uma lista de Users que lá se encontram
      * @param n número de linhas e colunas da grelha
-     * @param privilege true caso tenha privilégios, false caso contrário
      */
-    public Map<Location, Collection<String>> loadMap(int n, boolean privilege) {
+    public Map<Location, Collection<String>> loadMap(int n) {
         try {
             rlock.lock();
             Map<Location, Collection<String>> map = new TreeMap<>();
-            if (privilege) {
-                for (int i = 0; i < n; i++)
-                    for (int j = 0; j < n; j++)
-                        map.put(new Location(String.valueOf(i), String.valueOf(j)), new ArrayList<>());
-                for (Map.Entry<String, User> entry : this.mapUsers.entrySet()) {
-                    String username = entry.getKey();
-                    Location loc = entry.getValue().getLocation();
-                    Collection<String> usersLoc = map.get(loc);
-                    if (usersLoc != null) usersLoc.add(username);
-                }
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                    map.put(new Location(String.valueOf(i), String.valueOf(j)), new ArrayList<>());
+            for (Map.Entry<String, User> entry : this.mapUsers.entrySet()) {
+                String username = entry.getKey();
+                Location loc = entry.getValue().getLocation();
+                Collection<String> usersLoc = map.get(loc);
+                if (usersLoc != null) usersLoc.add(username);
             }
             return map;
         } finally {

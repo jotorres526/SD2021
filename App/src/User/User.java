@@ -14,44 +14,17 @@ public class User {
     private boolean privileged;
     // TODO: Encapsulamento
     private Location location;
+    private boolean infected;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock wlock = lock.writeLock();
     private final Lock rlock = lock.readLock();
-
-    public User() {
-        this.username = "";
-        this.password = "";
-        this.privileged = false;
-        this.location = new Location();
-    }
 
     public User(String username, String password, boolean privileged) {
         this.username = username;
         this.password = password;
         this.privileged = privileged;
+        this.infected = false;
         this.location = new Location();
-    }
-
-    public User(User user) {
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.location = user.getLocation();
-    }
-
-    public String getUsername() {
-        return this.username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Location getLocation() {
@@ -73,6 +46,17 @@ public class User {
         }
     }
 
+    public boolean isPrivileged() {
+        return this.privileged;
+    }
+
+    public boolean isInfected() {
+        return this.infected;
+    }
+
+    public void setInfected(boolean infected) {
+        this.infected = infected;
+    }
 
     /**
      * Retorna true se o User está atualmente numa localizacao e false caso não esteja

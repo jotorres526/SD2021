@@ -150,6 +150,20 @@ public class Stub {
         return r;
     }
 
+    public boolean isUserPrivileged(String user) {
+        boolean r = false;
+        try {
+            this.dos.writeUTF("is privileged");
+            this.dos.writeUTF(user);
+            this.dos.flush();
+            r = this.dis.readBoolean();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return r;
+    }
+
+
     /**
      * Carrega o mapa de todas as localizações da grelha
      * Primeiro, começa por enviar ao seu servidor um boolean para que seja validado
@@ -164,15 +178,13 @@ public class Stub {
      * Ao receber o tamanho, começa-se um novo ciclo que adiciona todos os usernames
      * à lista associada. Caso não haja nenhum elemento a adicionar, a lista irá
      * permanecer vazia, significando que não há ninguém nessa localização.
-     * @param privilege true caso o User seja privilegiado, false caso contrário
      * @param n número de linhas e colunas da grelha
      * @return mapa com todas as localizações e listas de usernames de cada cliente
      * associadas
      * @throws IOException exceção
      */
-    public Map<Location, Collection<String>> loadMap(boolean privilege, int n) throws IOException {
+    public Map<Location, Collection<String>> loadMap(int n) throws IOException {
         this.dos.writeUTF("loadmap");
-        this.dos.writeBoolean(privilege);
         this.dos.writeInt(n);
         this.dos.flush();
         Map<Location, Collection<String>> map = new TreeMap<>();
