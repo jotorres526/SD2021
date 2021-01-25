@@ -149,18 +149,34 @@ public class Prompt {
         if (isNotInteger(loc[0]) || isNotInteger(loc[1]) || loc[0] == null || loc[1] == null)
             System.out.println("Valores inválidos!");
         else {
-            this.stub.verifLoc(loc[0], loc[1]);
-            System.out.println("Já se pode deslocar para a localização (" + loc[0] + ", " + loc[1] + ")");
+            Runnable r = () -> {
+                this.stub.verifLoc(loc[0], loc[1]);
+                System.out.print("\nAviso: Já se pode deslocar para a localização (" + loc[0] + ", " + loc[1] + ")\n> ");
+            };
+            new Thread(r).start();
         }
+    }
+
+    public Thread notification(String user) {
+        Runnable notif = () -> {
+            this.stub.notification(user);
+            System.out.println("Você esteve em contacto com um infetado");
+        };
+        return new Thread(notif);
     }
 
     public void display() {
         boolean cont = true;
         String loggedUser = null;
+        Thread t = null;
         int limit = 5;
         Scanner s = new Scanner(System.in);
         System.out.println("Conexão estabelecida! Escreva help caso necessite de ajuda...");
         while (cont) {
+            if (t == null || loggedUser != null || !t.isAlive()) {
+                t = notification(loggedUser);
+                t.start();
+            }
             System.out.print("> ");
             String input = s.nextLine();
             switch (input) {
@@ -207,7 +223,7 @@ public class Prompt {
                 case "comunicar infecao" -> {
                     if (loggedUser != null) {
                         this.stub.commInfection(loggedUser);
-                        System.out.println("É recomendade entrar em isolamento");
+                        System.out.println("É recomendado entrar em isolamento");
                         logout(loggedUser);
                         loggedUser = null;
                     } else System.out.println("Não autenticado");

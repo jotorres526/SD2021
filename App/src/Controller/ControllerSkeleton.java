@@ -1,6 +1,8 @@
 package Controller;
 
 import User.Location;
+import User.User;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Collection;
@@ -55,7 +57,7 @@ public class ControllerSkeleton implements Skeleton {
                     Location loc = new Location(locX, locY);
                     boolean r = this.userscontroller.setLocalizacao(n, loc, limit);
                     if (r) { //localização inválida ou user não existe
-                        Collection<String> registo = this.userscontroller.getNewRegUsers(loc);
+                        Collection<User> registo = this.userscontroller.getNewRegUsers(loc);
                         this.regUsers.createNewRegisters(registo);
                     }
                     dos.writeBoolean(r);
@@ -73,6 +75,7 @@ public class ControllerSkeleton implements Skeleton {
                 case "communicate infection" -> {//para além de comunicar, avisar todos os users que já tiveram na loc do User
                      String user = dis.readUTF();
                      this.userscontroller.commInfection(user);
+                     this.regUsers.getListUser(user);
                 }
                 case "loadmap" -> {
                     int num = dis.readInt();
@@ -96,6 +99,12 @@ public class ControllerSkeleton implements Skeleton {
                 case "verify location" -> {
                     String locX = dis.readUTF(), locY = dis.readUTF();
                     dos.writeInt(this.userscontroller.getNumberInLoc(new Location(locX, locY)));
+                    dos.flush();
+                }
+                case "check notification" -> {
+                    String user = dis.readUTF();
+                    Collection<User> contacts = this.regUsers.getListUser(user);
+                    dos.writeBoolean(this.regUsers.hasInfected(contacts));
                     dos.flush();
                 }
                 case "exit" -> {

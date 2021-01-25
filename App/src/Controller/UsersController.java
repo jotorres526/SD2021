@@ -84,12 +84,12 @@ public class UsersController {
      * @param loc localizacao a procurar
      * @return uma collection com os identificadores dos users que estão na localização dada
      */
-    public Collection<String> getNewRegUsers(Location loc) {
+    public Collection<User> getNewRegUsers(Location loc) {
         try {
             rlock.lock();
-            Collection<String> list = new ArrayList<>();
+            Collection<User> list = new ArrayList<>();
             for (Map.Entry<String, User> entry : mapUsers.entrySet())
-                if (entry.getValue().locEquals(loc)) list.add(entry.getKey());
+                if (entry.getValue().locEquals(loc)) list.add(entry.getValue());
             return list;
         } finally {
            rlock.unlock();
@@ -153,8 +153,13 @@ public class UsersController {
      */
     public void commInfection(String user) {
         User u = this.mapUsers.get(user);
-        if (u != null) u.setInfected(true);
+        if (u != null) {
+            u.setInfected(true);
+            u.setLocation(new Location());
+        }
     }
+
+
 
     /**
      * Envia o mapa de todas as localizações da grelha

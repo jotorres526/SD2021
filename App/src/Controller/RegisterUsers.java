@@ -1,8 +1,11 @@
 package Controller;
 
+import User.User;
+
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 /**
  * Classe RegisterUsers
@@ -12,7 +15,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * é vazia.
  */
 public class RegisterUsers {
-    private final Map<String, Set<String>> map;
+    private final Map<String, Set<User>> map;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock rlock = lock.readLock();
     private final Lock wlock = lock.writeLock();
@@ -42,13 +45,11 @@ public class RegisterUsers {
      * @param user username de um determinado User
      * @return lista de usernames que já entraram em contacto com o user
      */
-    public Collection<String> getListUser(String user) { //WILL BE NEEDED para a de comunicar infeção
+    public Collection<User> getListUser(String user) {
         try {
             rlock.lock();
-            Collection<String> col = new ArrayList<>();
-            Collection<String> list = this.map.get(user);
-            if (list != null) col = new ArrayList<>(list);
-            return col;
+            Set<User> list = this.map.get(user);
+            return list.stream().map(User::clone).collect(Collectors.toList());
         } finally {
             rlock.unlock();
         }
@@ -63,17 +64,22 @@ public class RegisterUsers {
      * aconteceria para os restantes elementos da lista
      * @param list lista de Users que estão numa certa localização
      */
-    public void createNewRegisters(Collection<String> list) {
+    public void createNewRegisters(Collection<User> list) {
         try {
             wlock.lock();
-            for (String s : list) {
-                Set<String> set = this.map.get(s);
-                for (String user : list)
-                    if (!user.equals(s)) set.add(user);
+            for (User u : list) {
+                Set<User> set = this.map.get(u.getUsername());
+                set.addAll(list);
             }
         } finally {
             wlock.unlock();
         }
     }
 
+    public boolean hasInfected(Collection<User> users) {
+        for(User u : users) {
+            if (u != null && u.isInfected()) return true;
+        }
+        return false;
+    }
 }

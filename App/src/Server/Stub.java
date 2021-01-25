@@ -239,7 +239,20 @@ public class Stub {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-
+    public void notification(String user) {
+        boolean r = false;
+        try {
+            while (!r) {
+                this.dos.writeUTF("check notification");
+                this.dos.writeUTF(user);
+                this.dos.flush();
+                r = this.dis.readBoolean();
+                if (!r) timeout(10);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
