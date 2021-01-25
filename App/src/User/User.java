@@ -4,9 +4,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class User {
-    private String username;
-    private String password;
-    private boolean privileged;
+    private final String username;
+    private final String password;
+    private final boolean privileged;
     // TODO: Encapsulamento
     private Location location;
     private boolean infected;
