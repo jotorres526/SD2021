@@ -48,8 +48,7 @@ public class RegisterUsers {
     public Collection<User> getListUser(String user) {
         try {
             rlock.lock();
-            Set<User> list = this.map.get(user);
-            return list.stream().map(User::clone).collect(Collectors.toList());
+            return this.map.get(user);
         } finally {
             rlock.unlock();
         }

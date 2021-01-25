@@ -143,8 +143,14 @@ public class UsersController {
      * @return true se o user for privilegiado
      */
     public boolean isUserPrivileged(String user) {
-        User u = this.mapUsers.get(user);
-        return u != null && u.isPrivileged();
+        try {
+            rlock.lock();
+            User u = this.mapUsers.get(user);
+            return u != null && u.isPrivileged();
+        } finally {
+            rlock.unlock();
+        }
+
     }
 
     /**
@@ -152,11 +158,17 @@ public class UsersController {
      * @param user identificador do user em questão
      */
     public void commInfection(String user) {
-        User u = this.mapUsers.get(user);
-        if (u != null) {
-            u.setInfected(true);
-            u.setLocation(new Location());
+        try {
+            rlock.lock();
+            User u = this.mapUsers.get(user);
+            if (u != null) {
+                u.setInfected(true);
+                u.setLocation(new Location());
+            }
+        } finally {
+            rlock.unlock();
         }
+
     }
 
 

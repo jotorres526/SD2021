@@ -7,7 +7,6 @@ public class User implements Comparable<User> {
     private final String username;
     private final String password;
     private final boolean privileged;
-    // TODO: Encapsulamento
     private Location location;
     private boolean infected;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();

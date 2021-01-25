@@ -217,7 +217,7 @@ public class Stub {
     /**
      * Pausa a thread 5 segundos para tentar reconectar
      */
-    public static void timeout(int seconds) {
+    public void timeout(int seconds) {
         try {
             Thread.sleep(seconds * 1000L);
         } catch (InterruptedException e) {
@@ -241,18 +241,16 @@ public class Stub {
         }
     }
 
-    public void notification(String user) {
+    public boolean notification(String user) {
         boolean r = false;
         try {
-            while (!r) {
-                this.dos.writeUTF("check notification");
-                this.dos.writeUTF(user);
-                this.dos.flush();
-                r = this.dis.readBoolean();
-                if (!r) timeout(10);
-            }
+            this.dos.writeUTF("check notification");
+            this.dos.writeUTF(user);
+            this.dos.flush();
+            r = this.dis.readBoolean();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return r;
     }
 }

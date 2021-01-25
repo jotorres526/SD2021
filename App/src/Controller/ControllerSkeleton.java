@@ -56,7 +56,7 @@ public class ControllerSkeleton implements Skeleton {
                     String locY = dis.readUTF();
                     Location loc = new Location(locX, locY);
                     boolean r = this.userscontroller.setLocalizacao(n, loc, limit);
-                    if (r) { //localização inválida ou user não existe
+                    if (r) {
                         Collection<User> registo = this.userscontroller.getNewRegUsers(loc);
                         this.regUsers.createNewRegisters(registo);
                     }
