@@ -2,7 +2,6 @@ package Controller;
 
 import User.Location;
 import User.User;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Collection;
@@ -106,9 +105,7 @@ public class ControllerSkeleton implements Skeleton {
                     dos.writeBoolean(this.regUsers.hasInfected(contacts));
                     dos.flush();
                 }
-                case "exit" -> {
-                    cont = false;
-                }
+                case "exit" -> cont = false;
             }
         }
     }

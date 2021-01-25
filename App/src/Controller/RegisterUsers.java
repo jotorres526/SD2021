@@ -1,7 +1,6 @@
 package Controller;
 
 import User.User;
-
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -78,6 +77,11 @@ public class RegisterUsers {
         }
     }
 
+    /**
+     * Procura se há pelo menos um user infetado numa collection de users
+     * @param users collection onde se vai procurar o infetado
+     * @return true se houver pelo menos um user infetado
+     */
     public boolean hasInfected(Collection<User> users) {
         boolean r = false;
         for(User u : users) {
