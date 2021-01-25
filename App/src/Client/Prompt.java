@@ -160,7 +160,7 @@ public class Prompt {
     public Thread notification(String user) {
         Runnable notif = () -> {
             this.stub.notification(user);
-            System.out.println("Você esteve em contacto com um infetado");
+            System.out.print("\nVocê esteve em contacto com um infetado\n> ");
         };
         return new Thread(notif);
     }
@@ -173,7 +173,7 @@ public class Prompt {
         Scanner s = new Scanner(System.in);
         System.out.println("Conexão estabelecida! Escreva help caso necessite de ajuda...");
         while (cont) {
-            if (t == null || loggedUser != null || !t.isAlive()) {
+            if (t != null && !t.isAlive()) {
                 t = notification(loggedUser);
                 t.start();
             }
@@ -184,6 +184,7 @@ public class Prompt {
                     if (loggedUser != null) {
                         logout(loggedUser);
                         loggedUser = null;
+                        t.interrupt();
                     } else System.out.println("Não autenticado");
                 }
                 case "sair" -> {
@@ -198,6 +199,8 @@ public class Prompt {
                 case "login" -> {
                     if (loggedUser == null) {
                        loggedUser = login();
+                       t = notification(loggedUser);
+                       t.start();
                     } else System.out.println("Já se encontra autenticado");
                 }
                 case "atualizar localizacao" -> {

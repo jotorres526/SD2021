@@ -75,7 +75,6 @@ public class ControllerSkeleton implements Skeleton {
                 case "communicate infection" -> {//para além de comunicar, avisar todos os users que já tiveram na loc do User
                      String user = dis.readUTF();
                      this.userscontroller.commInfection(user);
-                     this.regUsers.getListUser(user);
                 }
                 case "loadmap" -> {
                     int num = dis.readInt();

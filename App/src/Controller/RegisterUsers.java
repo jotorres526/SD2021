@@ -69,7 +69,9 @@ public class RegisterUsers {
             wlock.lock();
             for (User u : list) {
                 Set<User> set = this.map.get(u.getUsername());
-                set.addAll(list);
+                //set = set.stream().filter(user -> !user.equals(u)).map(User::clone).map(User::clone).collect(Collectors.toSet());
+                for (User user : list)
+                    if (!user.equals(u)) set.add(user);
             }
         } finally {
             wlock.unlock();
@@ -77,9 +79,13 @@ public class RegisterUsers {
     }
 
     public boolean hasInfected(Collection<User> users) {
+        boolean r = false;
         for(User u : users) {
-            if (u != null && u.isInfected()) return true;
+            if (u != null && u.isInfected()) {
+                users.remove(u);
+                r = true;
+            }
         }
-        return false;
+        return r;
     }
 }
