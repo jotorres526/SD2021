@@ -218,7 +218,7 @@ public class Stub {
     /**
      * Pausa a thread 5 segundos para tentar reconectar
      */
-    public static void timeout(int seconds) {
+    public void timeout(int seconds) {
         try {
             Thread.sleep(seconds * 1000L);
         } catch (InterruptedException e) {

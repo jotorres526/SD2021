@@ -104,7 +104,7 @@ public class UsersController {
      */
     public boolean setLocalizacao(String username, Location l, int n) {
         try {
-            rlock.lock();
+            wlock.lock();
             boolean success = false;
             User user = this.mapUsers.get(username);
             if (user != null && l.isInLimit(n)) {
@@ -113,7 +113,7 @@ public class UsersController {
             }
             return success;
         } finally {
-            rlock.unlock();
+            wlock.unlock();
         }
 
     }

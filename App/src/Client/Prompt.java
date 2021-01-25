@@ -167,7 +167,11 @@ public class Prompt {
             while (!Thread.currentThread().isInterrupted()) {
                 boolean r = this.stub.notification(user);
                 if (r) System.out.print("\nVocê esteve em contacto com um infetado\n> ");
-                this.stub.timeout(5);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         };
         return new Thread(notif);
