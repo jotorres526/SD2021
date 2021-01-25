@@ -142,6 +142,7 @@ public class Stub {
             this.dos.writeUTF("how many people in location");
             this.dos.writeUTF(locX);
             this.dos.writeUTF(locY);
+            this.dos.flush();
             r = this.dis.readInt();
         } catch (IOException e) {
             e.printStackTrace();
@@ -170,23 +171,21 @@ public class Stub {
      * @throws IOException exceção
      */
     public Map<Location, Collection<String>> loadMap(boolean privilege, int n) throws IOException {
+        this.dos.writeUTF("loadmap");
         this.dos.writeBoolean(privilege);
         this.dos.writeInt(n);
-        boolean keepGoing = true;
+        this.dos.flush();
         Map<Location, Collection<String>> map = new TreeMap<>();
-        while (keepGoing) {
-            keepGoing = dis.readBoolean();
+        while (dis.readBoolean()) {
             String locX = dis.readUTF();
             String locY = dis.readUTF();
             int size = dis.readInt();
             Location loc = new Location(locX, locY);
             map.put(loc, new ArrayList<>());
-            if (size > 0) {
-                for (int i = 0; i < size; i++) {
-                    String user = dis.readUTF();
-                    Collection<String> list = map.get(loc);
-                    list.add(user);
-                }
+            for (int i = 0; i < size ; i++) {
+                String user = dis.readUTF();
+                Collection<String> list = map.get(loc);
+                list.add(user);
             }
         }
         return map;

@@ -2,6 +2,7 @@ package Client;
 
 import Server.Stub;
 import User.Location;
+import User.User;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -145,7 +146,6 @@ public class Prompt {
             System.out.println("Valores inválidos!");
         else {
             number = this.stub.howManyInLocation(locX, locY);
-            System.out.println("oooo");
             if (number > 1) {
                 System.out.println("Estão neste momento " + number + " pessoas em (" + locX + "," + locY + ")");
                 System.out.println("Pretende deslocar-se para lá? (s/n)");
@@ -158,23 +158,22 @@ public class Prompt {
     }
 
     public void loadMapa(boolean privileged, int n) throws IOException {
-        Map<Location, Collection<String>> map = this.stub.loadMap(privileged, n);
-        if (!map.isEmpty()) {
+        if (privileged) {
+            Map<Location, Collection<String>> map = this.stub.loadMap(privileged, n);
             for(Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
                 Collection<String> list = entry.getValue();
-                System.out.println("Localização " + entry.getKey().toString() + ": ");
+                System.out.print("Localização " + entry.getKey().toString() + ": ");
                 if (list.isEmpty()) System.out.println("Vazia");
                 for(String s : list)
-                    System.out.println("User: " + s);
+                    System.out.println("\n - Utilizador: " + s);
             }
         } else System.out.println("Não tem permissões para carregar o mapa!");
-
     }
 
     public void display() throws IOException {
-        boolean cont = true, sucLogin = false, privileged = false;
-        String username = null;
-        int limit = 10;
+        boolean cont = true, sucLogin = false, privileged = true;
+        User user = null;
+        int limit = 1;
         Scanner s = new Scanner(System.in);
         System.out.println("Conexão estabelecida! Escreva help caso necessite de ajuda...");
         while (cont) {
@@ -189,25 +188,31 @@ public class Prompt {
                 case "registar" -> registar();
                 case "login" -> {
                     if (!sucLogin) {
-                        String pw;
-                        boolean res;
+                        String pw, username;
                         System.out.print("Introduza o utilizador: ");
                         username = s.nextLine();
                         System.out.print("Introduza a password: ");
                         pw = s.nextLine();
-                        res = stub.login(username, pw);
-                        if (res) System.out.println("Autenticação bem sucedida!");
-                        else System.out.println("O username ou a password não estão corretos...");
-                        sucLogin = true;
+                        if (stub.login(username, pw)) {
+                            System.out.println("Autenticação bem sucedida!");
+                            sucLogin = true;
+                        } else {
+                            System.out.println("O username ou a password não estão corretos...");
+                        }
                     } else System.out.println("Já se encontra autenticado!");
                 }
                 case "atualizar localizacao" -> {
-                    if (sucLogin) changeLoc(username);
+                    if (sucLogin)
+                        changeLoc(user.getUsername());
                 }
                 case "quantas pessoas" -> {
-                    if (sucLogin) howManyInLoc(username);
+                    if (sucLogin)
+                        howManyInLoc(user.getUsername());
                 }
-                case "carregar mapa" -> loadMapa(privileged, limit);
+                case "carregar mapa" -> {
+                    if (sucLogin)
+                        loadMapa(privileged, limit);
+                }
                 case "help" -> {
                     System.out.println("Lista de comandos:");
                     System.out.println(" - login                 -> Autenticação");

@@ -144,7 +144,7 @@ public class UsersController {
     public Map<Location, Collection<String>> loadMap(int n, boolean privilege) {
         try {
             rlock.lock();
-            Map<Location, Collection<String>> map = new TreeMap<>(); //comparator!
+            Map<Location, Collection<String>> map = new TreeMap<>();
             if (privilege) {
                 for (int i = 0; i < n; i++)
                     for (int j = 0; j < n; j++)

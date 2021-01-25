@@ -1,5 +1,6 @@
 package User;
 
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Objects;
  * Contém as coordenadas de um User.User, que são atribuídas através
  * de uma grelha NxN.
  */
-public class Location {
+public class Location implements Comparable<Location>{
     private String coordX;
     private String coordY;
 
@@ -58,8 +59,24 @@ public class Location {
         return new Location(this);
     }
 
+    @Override
+    public int compareTo(Location location) {
+        int r;
+        if (this.coordX.equals(location.coordX)) {
+            r = this.coordY.compareTo(location.coordY);
+        } else {
+            r = this.coordX.compareTo(location.coordX);
+        }
+        return r;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + this.coordX + ", " + this.coordY + ")";
+    }
+
     public boolean isInLimit(int limit) {
-        return Integer.parseInt(this.coordX) <= limit && Integer.parseInt(this.coordY) <= limit &&
-                Integer.parseInt(this.coordX) >= 0 && Integer.parseInt(this.coordY) >= 0;
+        return Integer.parseInt(this.coordX) < limit && Integer.parseInt(this.coordY) < limit &&
+               Integer.parseInt(this.coordX) >= 0 && Integer.parseInt(this.coordY) >= 0;
     }
 }

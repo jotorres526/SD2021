@@ -26,7 +26,7 @@ public class ControllerSkeleton implements Skeleton {
 
     @Override
     public void handle(DataInputStream dis, DataOutputStream dos) throws Exception {
-        int limit = 10;
+        int limit = 1;
         boolean cont = true;
         while (cont) {
             switch (dis.readUTF()) {
@@ -85,14 +85,11 @@ public class ControllerSkeleton implements Skeleton {
                  * Retorna o número de pessoas numa localização
                  */
                 case "how many people in location":
-                    System.out.println("sss");
                     String x = dis.readUTF();
                     String y = dis.readUTF();
                     Location l = new Location(x,y);
                     int number = -1;
-                    System.out.println("assim");
                     if (l.isInLimit(limit)) number = this.userscontroller.getNumberInLoc(new Location(x, y));
-                    System.out.println("aqui");
                     dos.writeInt(number); //-1 caso a localização seja inválida, >0 caso contrário
                     dos.flush();
                     break;
@@ -110,11 +107,10 @@ public class ControllerSkeleton implements Skeleton {
                  * Retorna a lista de todas as localizações (livres e ocupadas) e,
                  * quando estão ocupadas por um ou mais Users, apresenta-os
                  */
-                case "load map":
+                case "loadmap":
                     boolean privilege = dis.readBoolean();
                     int num = dis.readInt();
-                    Map<Location, Collection<String>> map;
-                    map = this.userscontroller.loadMap(num, privilege);
+                    Map<Location, Collection<String>> map = this.userscontroller.loadMap(num, privilege);
                     for (Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
                         dos.writeBoolean(true);
                         dos.writeUTF(entry.getKey().getCoordX());
