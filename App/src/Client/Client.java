@@ -19,6 +19,5 @@ public class Client {
     public static void main(String[] args) throws IOException {
         Stub stub = new Stub();
         new Prompt(stub).display();
-        stub.killStub();
     }
 }

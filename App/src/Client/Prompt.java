@@ -25,18 +25,19 @@ public class Prompt {
      */
     public void exit () {
         System.out.println("Dando logout...");
+        this.stub.killStub();
     }
 
     public void registar() {
         String user, pw, answer;
         boolean ret, privileged;
         Scanner s = new Scanner(System.in);
-        System.out.println("Introduza o seu username: ");
+        System.out.print("Introduza o seu username: ");
         user = s.nextLine();
-        System.out.println("Introduza a password: ");
+        System.out.print("Introduza a password: ");
         pw = s.nextLine();
         do {
-            System.out.println("É um utilizador Premium? (s/n)");
+            System.out.print("É um utilizador Premium? (s/n): ");
             answer = s.nextLine();
         } while (!answer.equals("s") && !answer.equals("n"));
         privileged = answer.equals("s");
@@ -49,39 +50,31 @@ public class Prompt {
      * Display do menu de login
      * @return true caso tenha havido sucesso, false caso contrário
      */
-    public String login (boolean sucLogin) {
-        String user = null;
-        if (!sucLogin) {
-            Scanner s = new Scanner(System.in);
-            String pw;
-            boolean res;
-            System.out.print("Introduza o utilizador: ");
-            user = s.nextLine();
-            System.out.print("Introduza a password: ");
-            pw = s.nextLine();
-            res = stub.login(user, pw);
-            if (res) System.out.println("Autenticação bem sucedida!");
-            else System.out.println("O username ou a password não estão corretos...");
-            sucLogin = true;
-        } else System.out.println("Já se encontra autenticado!");
+    public String login() {
+        String pw, user = null;
+        Scanner s = new Scanner(System.in);
+        System.out.print("Introduza o utilizador: ");
+        user = s.nextLine();
+        System.out.print("Introduza a password: ");
+        pw = s.nextLine();
+        if (stub.login(user, pw))
+            System.out.println("Autenticação bem sucedida!");
+        else {
+            System.out.println("O username ou a password não estão corretos...");
+            user = null;
+        }
         return user;
     }
 
     /**
      * Um User sai da sua conta de utilizador
-     * @param sucLogin true caso o User se tenha autenticado, false
-     *                 caso contrário
-     * @return false caso o logout tenha sido bem sucedido, true caso
-     * o User não tenha estado autenticado e por isso não conseguirá
-     * fazer logout
+     * @param user String com o username atualmente conectado. Nulo caso não esteja ninguem conectado
      */
-    public boolean logout(boolean sucLogin) {
-        if (sucLogin) {
+    public void logout(String user) {
+        if (user != null)
             System.out.println("Saindo...");
-            sucLogin = false;
-        }
-        else System.out.println("De momento, não se encontra autenticado...");
-        return sucLogin;
+        else
+            System.out.println("De momento, não se encontra autenticado qualquer utilizador...");
     }
 
     /**
@@ -157,61 +150,68 @@ public class Prompt {
         }
     }
 
-    public void loadMapa(boolean privileged, int n) throws IOException {
-        if (privileged) {
-            Map<Location, Collection<String>> map = this.stub.loadMap(privileged, n);
-            for(Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
-                Collection<String> list = entry.getValue();
-                System.out.print("Localização " + entry.getKey().toString() + ": ");
-                if (list.isEmpty()) System.out.println("Vazia");
-                for(String s : list)
-                    System.out.println("\n - Utilizador: " + s);
-            }
-        } else System.out.println("Não tem permissões para carregar o mapa!");
+    public void loadMapa(int n) throws IOException {
+        Map<Location, Collection<String>> map = this.stub.loadMap(n);
+        for(Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
+            Collection<String> list = entry.getValue();
+            System.out.print("Localização " + entry.getKey().toString() + ": ");
+            if (list.isEmpty()) System.out.println("Vazia");
+            for(String s : list)
+                System.out.println("\n - Utilizador: " + s);
+        }
+    }
+
+    public void verifLoc() {
+
     }
 
     public void display() throws IOException {
-        boolean cont = true, sucLogin = false, privileged = true;
-        User user = null;
-        int limit = 1;
+        boolean cont = true;
+        String loggedUser = null;
+        int limit = 5;
         Scanner s = new Scanner(System.in);
         System.out.println("Conexão estabelecida! Escreva help caso necessite de ajuda...");
         while (cont) {
             System.out.print("> ");
             String input = s.nextLine();
             switch (input) {
-                case "logout" -> sucLogin = logout(sucLogin);
+                case "logout" -> {
+                    if (loggedUser != null) {
+                        logout(loggedUser);
+                        loggedUser = null;
+                    } else System.out.println("Não autenticado");
+                }
                 case "sair" -> {
                     exit();
                     cont = false;
                 }
-                case "registar" -> registar();
+                case "registar" -> {
+                    if (loggedUser == null) {
+                        registar();
+                    } else System.out.println("Já se encontra autenticado");
+                }
                 case "login" -> {
-                    if (!sucLogin) {
-                        String pw, username;
-                        System.out.print("Introduza o utilizador: ");
-                        username = s.nextLine();
-                        System.out.print("Introduza a password: ");
-                        pw = s.nextLine();
-                        if (stub.login(username, pw)) {
-                            System.out.println("Autenticação bem sucedida!");
-                            sucLogin = true;
-                        } else {
-                            System.out.println("O username ou a password não estão corretos...");
-                        }
-                    } else System.out.println("Já se encontra autenticado!");
+                    if (loggedUser == null) {
+                       loggedUser = login();
+                    } else System.out.println("Já se encontra autenticado");
                 }
                 case "atualizar localizacao" -> {
-                    if (sucLogin)
-                        changeLoc(user.getUsername());
+                    if (loggedUser != null)
+                        changeLoc(loggedUser);
+                    else System.out.println("Não autenticado");
                 }
                 case "quantas pessoas" -> {
-                    if (sucLogin)
-                        howManyInLoc(user.getUsername());
+                    if (loggedUser != null)
+                        howManyInLoc(loggedUser);
+                    else System.out.println("Não autenticado");
                 }
                 case "carregar mapa" -> {
-                    if (sucLogin)
-                        loadMapa(privileged, limit);
+                    if (loggedUser != null && this.stub.isUserPrivileged(loggedUser)) {
+                        loadMapa(limit);
+                    } else System.out.println("Permissões insuficientes ou não autenticado.");
+                }
+                case "verificar localizacao" -> {
+
                 }
                 case "help" -> {
                     System.out.println("Lista de comandos:");

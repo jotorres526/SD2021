@@ -26,7 +26,7 @@ public class ControllerSkeleton implements Skeleton {
 
     @Override
     public void handle(DataInputStream dis, DataOutputStream dos) throws Exception {
-        int limit = 1;
+        int limit = 5;
         boolean cont = true;
         while (cont) {
             switch (dis.readUTF()) {
@@ -108,9 +108,8 @@ public class ControllerSkeleton implements Skeleton {
                  * quando estão ocupadas por um ou mais Users, apresenta-os
                  */
                 case "loadmap":
-                    boolean privilege = dis.readBoolean();
                     int num = dis.readInt();
-                    Map<Location, Collection<String>> map = this.userscontroller.loadMap(num, privilege);
+                    Map<Location, Collection<String>> map = this.userscontroller.loadMap(num);
                     for (Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
                         dos.writeBoolean(true);
                         dos.writeUTF(entry.getKey().getCoordX());
@@ -120,6 +119,11 @@ public class ControllerSkeleton implements Skeleton {
                             dos.writeUTF(user);
                     }
                     dos.writeBoolean(false);
+                    dos.flush();
+                    break;
+                case "is privileged":
+                    String user = dis.readUTF();
+                    dos.writeBoolean(this.userscontroller.isUserPrivileged(user));
                     dos.flush();
                     break;
                 /*
