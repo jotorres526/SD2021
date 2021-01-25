@@ -3,7 +3,7 @@ package User;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class User {
+public class User implements Comparable<User> {
     private final String username;
     private final String password;
     private final boolean privileged;
@@ -22,6 +22,15 @@ public class User {
         this.location = new Location();
     }
 
+    public User(User user) {
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.privileged = user.isPrivileged();
+        this.infected = user.isInfected();
+        this.location = user.getLocation();
+    }
+
+
     public Location getLocation() {
         try {
             rlock.lock();
@@ -30,6 +39,14 @@ public class User {
         finally {
           rlock.unlock();
         }
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getPassword() {
+        return this.password;
     }
 
     public void setLocation(Location location) {
@@ -113,6 +130,14 @@ public class User {
         } finally {
             rlock.unlock();
         }
+    }
+
+    @Override
+    public int compareTo(User user) {
+        return this.username.compareTo(user.getUsername());
+    }
+    public User clone() {
+        return new User(this);
     }
 }
 
