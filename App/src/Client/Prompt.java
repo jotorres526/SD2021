@@ -2,8 +2,6 @@ package Client;
 
 import Server.Stub;
 import User.Location;
-import User.User;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -12,10 +10,9 @@ import java.util.Scanner;
 public class Prompt {
     private final Stub stub;
 
-    public Prompt() {
-        this.stub = new Stub();
-    }
-
+    /**
+     * Construtor parametrizado da classe Prompt
+     */
     public Prompt(Stub stub) {
         this.stub = stub;
     }
@@ -28,6 +25,9 @@ public class Prompt {
         this.stub.killStub();
     }
 
+    /**
+     * Dislay de um menu para um utilizador se registar
+     */
     public void registar() {
         String user, pw, answer;
         boolean ret, privileged;
@@ -51,7 +51,7 @@ public class Prompt {
      * @return true caso tenha havido sucesso, false caso contrário
      */
     public String login() {
-        String pw, user = null;
+        String pw, user;
         Scanner s = new Scanner(System.in);
         System.out.print("Introduza o utilizador: ");
         user = s.nextLine();
@@ -150,6 +150,10 @@ public class Prompt {
         }
     }
 
+    /**
+     * Display do mapa onde estão indicandos quantos utilizadores e quantos
+     * doentes visitaram cada localização.
+     */
     public void loadMapa(int n) throws IOException {
         Map<Location, Collection<String>> map = this.stub.loadMap(n);
         for(Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
