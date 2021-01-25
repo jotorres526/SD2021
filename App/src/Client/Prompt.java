@@ -139,6 +139,9 @@ public class Prompt {
         }
     }
 
+    /**
+     * Display para a alteração da localização atual do user
+     */
     public void verifLoc() {
         Scanner s = new Scanner(System.in);
         System.out.println("Qual a localização sobre a qual pretende ser notificado/a?");

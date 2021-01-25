@@ -147,6 +147,10 @@ public class UsersController {
         return u != null && u.isPrivileged();
     }
 
+    /**
+     * Altera o estado de um cliente para afetado
+     * @param user identificador do user em questão
+     */
     public void commInfection(String user) {
         User u = this.mapUsers.get(user);
         if (u != null) u.setInfected(true);

@@ -20,6 +20,9 @@ public class Stub {
     private final DataInputStream dis;
     private final Socket s;
 
+    /**
+     * Construtor por omissão da classse Stub
+     */
     public Stub() {
         Socket s = null;
         DataOutputStream dos = null;
@@ -154,6 +157,10 @@ public class Stub {
         return r;
     }
 
+    /**
+     * Comunica que um user está infetado
+     * @param user identificador do user
+     */
     public void commInfection(String user) {
         try {
             this.dos.writeUTF("communicate infection");
@@ -182,7 +189,6 @@ public class Stub {
      * @param n número de linhas e colunas da grelha
      * @return mapa com todas as localizações e listas de usernames de cada cliente
      * associadas
-     * @throws IOException exceção
      */
     public Map<Location, Collection<String>> loadMap(int n)  {
         Map<Location, Collection<String>> map = new TreeMap<>();
@@ -208,6 +214,9 @@ public class Stub {
         return map;
     }
 
+    /**
+     * Pausa a thread 5 segundos para tentar reconectar
+     */
     public static void timeout(int seconds) {
         try {
             Thread.sleep(seconds * 1000L);
