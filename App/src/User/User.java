@@ -85,7 +85,7 @@ public class User {
     public boolean login(String pw) {
         try {
             rlock.lock();
-            return this.password.equals(pw);
+            return this.password.equals(pw) && !this.infected;
         } finally {
             rlock.unlock();
         }

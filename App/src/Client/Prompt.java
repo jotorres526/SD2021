@@ -60,7 +60,7 @@ public class Prompt {
         if (stub.login(user, pw))
             System.out.println("Autenticação bem sucedida!");
         else {
-            System.out.println("O username ou a password não estão corretos...");
+            System.out.println("Autenticação inválida");
             user = null;
         }
         return user;
@@ -96,61 +96,36 @@ public class Prompt {
      * Atualiza a localização de um User
      * @param user username
      */
-    public void changeLoc(String user) { //fazer parse
-        boolean res = false;
-        try {
-            Scanner s = new Scanner(System.in);
-            String[] loc;
-            String answer, locX, locY;
-            System.out.println("Para que localização se pretende deslocar? (Responda p.ex: 1 1)");
-            answer = s.nextLine();
-            loc = answer.split(" ");
-            locX = loc[0];
-            locY = loc[1];
-            if (isNotInteger(locX) || isNotInteger(locY) || locX == null || locY == null)
-                System.out.println("Os valores da localização são 2 e têm de ser inteiros...");
-            else res = this.stub.changeLoc(user, locX, locY);
-            if (res) System.out.println("Atualização bem sucedida!");
-            else System.out.println("Essa localização é inválida. Relembre-se que a localização está entre (0,0) e (10,10)");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void changeLoc(String user) {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Para que localização se pretende deslocar? (Responda p.ex: 1 1)");
+        String[] loc = s.nextLine().split(" ");
+        if (!(isNotInteger(loc[0]) || isNotInteger(loc[1]) || loc[0] == null || loc[1] == null)) {
+            if (this.stub.changeLoc(user, loc[0], loc[1]))
+                System.out.println("Atualização bem sucedida!");
+            else System.out.println("Essa localização não está dentro dos limites");
+        } else System.out.println("Os valores da localização são 2 e têm de ser inteiros...");
     }
 
     /**
      * Quantas pessoas estão numa dada localização
-     * Consoante o resultado, o User pode decidir se se pretende deslocar
-     * ou não
-     * @param user username
-     * @throws IOException exceção
      */
-    public void howManyInLoc(String user) throws IOException {
+    public void howManyInLoc() {
         Scanner s = new Scanner(System.in);
-        String[] loc;
-        String answer, locX, locY;
-        int number;
-        boolean sn;
         System.out.println("Em que localização pretende saber o número de pessoas? (Responda p.ex: 1 1)");
-        answer = s.nextLine();
-        loc = answer.split(" ");
-        locX = loc[0];
-        locY = loc[1];
-        if (isNotInteger(locX) || isNotInteger(locY) || locX == null || locY == null)
+        String[] loc = s.nextLine().split(" ");
+        if (isNotInteger(loc[0]) || isNotInteger(loc[1]) || loc[0] == null || loc[1] == null)
             System.out.println("Valores inválidos!");
         else {
-            number = this.stub.howManyInLocation(locX, locY);
-            if (number > 1) {
-                System.out.println("Estão neste momento " + number + " pessoas em (" + locX + "," + locY + ")");
-                System.out.println("Pretende deslocar-se para lá? (s/n)");
-                answer = s.nextLine();
-                if (answer.equals("s")) sn = this.stub.changeLoc(user, locX, locY);
-            } else if (number == 1) System.out.println("Está neste momento 1 pessoa em (" + locX + "," + locY + ")");
+            int number = this.stub.howManyInLocation(loc[0], loc[1]);
+            if (number > 1) System.out.println("Estão neste momento " + number + " pessoas em (" + loc[0] + "," + loc[1] + ")");
+            else if (number == 1) System.out.println("Está neste momento 1 pessoa em (" + loc[0] + "," + loc[1] + ")");
             else if (number == 0) System.out.println("Não há de momento ninguém nessa localização...");
             else System.out.println("Essa localização não é válida!");
         }
     }
 
-    public void loadMapa(int n) throws IOException {
+    public void loadMapa(int n)  {
         Map<Location, Collection<String>> map = this.stub.loadMap(n);
         for(Map.Entry<Location, Collection<String>> entry : map.entrySet()) {
             Collection<String> list = entry.getValue();
@@ -162,10 +137,18 @@ public class Prompt {
     }
 
     public void verifLoc() {
-
+        Scanner s = new Scanner(System.in);
+        System.out.println("Qual a localização sobre a qual pretende ser notificado/a?");
+        String[] loc = s.nextLine().split(" ");
+        if (isNotInteger(loc[0]) || isNotInteger(loc[1]) || loc[0] == null || loc[1] == null)
+            System.out.println("Valores inválidos!");
+        else {
+            this.stub.verifLoc(loc[0], loc[1]);
+            System.out.println("Já se pode deslocar para a localização (" + loc[0] + ", " + loc[1] + ")");
+        }
     }
 
-    public void display() throws IOException {
+    public void display() {
         boolean cont = true;
         String loggedUser = null;
         int limit = 5;
@@ -202,7 +185,7 @@ public class Prompt {
                 }
                 case "quantas pessoas" -> {
                     if (loggedUser != null)
-                        howManyInLoc(loggedUser);
+                        howManyInLoc();
                     else System.out.println("Não autenticado");
                 }
                 case "carregar mapa" -> {
@@ -211,7 +194,17 @@ public class Prompt {
                     } else System.out.println("Permissões insuficientes ou não autenticado.");
                 }
                 case "verificar localizacao" -> {
-
+                    if (loggedUser != null) {
+                        verifLoc();
+                    } else System.out.println("Não autenticado");
+                }
+                case "comunicar infecao" -> {
+                    if (loggedUser != null) {
+                        this.stub.commInfection(loggedUser);
+                        System.out.println("É recomendade entrar em isolamento");
+                        logout(loggedUser);
+                        loggedUser = null;
+                    } else System.out.println("Não autenticado");
                 }
                 case "help" -> {
                     System.out.println("Lista de comandos:");

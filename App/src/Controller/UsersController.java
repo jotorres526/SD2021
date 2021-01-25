@@ -135,6 +135,11 @@ public class UsersController {
         return u != null && u.isPrivileged();
     }
 
+    public void commInfection(String user) {
+        User u = this.mapUsers.get(user);
+        if (u != null) u.setInfected(true);
+    }
+
     /**
      * Envia o mapa de todas as localizações da grelha
      * Começa por preencher o mapa com todas as localizações

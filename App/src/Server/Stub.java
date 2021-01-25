@@ -115,17 +115,19 @@ public class Stub {
      * @param locY segundo parâmetro da localização, sendo que uma localização
      *             corresponde a um par (x,y)
      */
-    public boolean changeLoc(String user, String locX, String locY) throws IOException {
+    public boolean changeLoc(String user, String locX, String locY) {
+        boolean r = false;
         try {
             this.dos.writeUTF("change location");
             this.dos.writeUTF(user);
             this.dos.writeUTF(locX);
             this.dos.writeUTF(locY);
             this.dos.flush();
+            r = this.dis.readBoolean();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return this.dis.readBoolean();
+        return r;
     }
 
     /**
@@ -163,6 +165,16 @@ public class Stub {
         return r;
     }
 
+    public void commInfection(String user) {
+        try {
+            this.dos.writeUTF("communicate infection");
+            this.dos.writeUTF(user);
+            this.dos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * Carrega o mapa de todas as localizações da grelha
@@ -183,25 +195,53 @@ public class Stub {
      * associadas
      * @throws IOException exceção
      */
-    public Map<Location, Collection<String>> loadMap(int n) throws IOException {
-        this.dos.writeUTF("loadmap");
-        this.dos.writeInt(n);
-        this.dos.flush();
+    public Map<Location, Collection<String>> loadMap(int n)  {
         Map<Location, Collection<String>> map = new TreeMap<>();
-        while (dis.readBoolean()) {
-            String locX = dis.readUTF();
-            String locY = dis.readUTF();
-            int size = dis.readInt();
-            Location loc = new Location(locX, locY);
-            map.put(loc, new ArrayList<>());
-            for (int i = 0; i < size ; i++) {
-                String user = dis.readUTF();
-                Collection<String> list = map.get(loc);
-                list.add(user);
+        try {
+            this.dos.writeUTF("loadmap");
+            this.dos.writeInt(n);
+            this.dos.flush();
+            while (dis.readBoolean()) {
+                String locX = dis.readUTF();
+                String locY = dis.readUTF();
+                int size = dis.readInt();
+                Location loc = new Location(locX, locY);
+                map.put(loc, new ArrayList<>());
+                for (int i = 0; i < size ; i++) {
+                    String user = dis.readUTF();
+                    Collection<String> list = map.get(loc);
+                    list.add(user);
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return map;
     }
 
-    //TODO query de comunicar infeção
+    public static void timeout(int seconds) {
+        try {
+            Thread.sleep(seconds * 1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void verifLoc(String locX, String locY) {
+        int numPeople;
+        try {
+            do {
+                this.dos.writeUTF("verify location");
+                this.dos.writeUTF(locX);
+                this.dos.writeUTF(locY);
+                this.dos.flush();
+                numPeople = this.dis.readInt();
+                if (numPeople > 0) timeout(5);
+            } while (numPeople > 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }
