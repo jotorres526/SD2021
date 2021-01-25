@@ -94,6 +94,7 @@ public class Stub {
             e.printStackTrace();
         }
     }
+
     /**
      * Atualiza a localização de um User.User
      * @param user username
@@ -217,7 +218,7 @@ public class Stub {
     /**
      * Pausa a thread 5 segundos para tentar reconectar
      */
-    public void timeout(int seconds) {
+    public static void timeout(int seconds) {
         try {
             Thread.sleep(seconds * 1000L);
         } catch (InterruptedException e) {
@@ -225,6 +226,11 @@ public class Stub {
         }
     }
 
+    /**
+     * Executa até numa dada localização estarem 0 users (é seguro ir)
+     * @param locX coordenada x da localização
+     * @param locY coordenada y da localização
+     */
     public void verifLoc(String locX, String locY) {
         int numPeople;
         try {
@@ -241,6 +247,11 @@ public class Stub {
         }
     }
 
+    /**
+     *  Pergunta ao servidor se o user esteve em contacto com alguem infetado,
+     *  em caso positivo o utilizador é notificado
+     * @param user identificador do utilizador
+     */
     public boolean notification(String user) {
         boolean r = false;
         try {

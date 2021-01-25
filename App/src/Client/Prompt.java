@@ -157,6 +157,11 @@ public class Prompt {
         }
     }
 
+    /**
+     * Display para notificar um Utilizador que esteve em contacto
+     * @param user identificador do utilizador
+     * @return thread que corre sobre o Runnable notif
+     */
     public Thread notification(String user) {
         Runnable notif = () -> {
             while (!Thread.currentThread().isInterrupted()) {

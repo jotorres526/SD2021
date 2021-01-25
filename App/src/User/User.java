@@ -145,6 +145,7 @@ public class User implements Comparable<User> {
     public int compareTo(User user) {
         return this.username.compareTo(user.getUsername());
     }
+
     public User clone() {
         return new User(this);
     }
