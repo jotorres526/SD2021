@@ -17,20 +17,16 @@ public class RegisterUsers {
     private final Lock rlock = lock.readLock();
     private final Lock wlock = lock.writeLock();
 
+    /**
+     * Construtor por omissão da classe RegisterUsers
+     */
     public RegisterUsers() {
         this.map = new HashMap<>();
     }
 
-    public void addUserToList(String user, String newUser) { //INÚTIL
-        try {
-            wlock.lock();
-            Collection<String> list = this.map.get(user);
-            if (list != null) list.add(newUser);
-        } finally {
-            wlock.unlock();
-        }
-    }
-
+    /**
+     * Método que cria uma entrada para o mapa, ou seja, adiciona um novo
+     */
     public void createEntry(String user) {
         try {
             wlock.lock();
@@ -57,31 +53,6 @@ public class RegisterUsers {
             rlock.unlock();
         }
     }
-
-    /*
-    public boolean existsKeyUser(String user) { //inútil
-        try {
-            rlock.lock();
-            return this.map.get(user) != null;
-        } finally {
-            rlock.unlock();
-        }
-    }*/
-
-    /*
-    public boolean addUser(String user) { //inútil
-        try {
-            wlock.lock();
-            boolean success = false;
-            if (!existsKeyUser(user)) {
-                this.map.put(user, new TreeSet<>());
-                success = true;
-            }
-            return success;
-        } finally {
-            wlock.unlock();
-        }
-    }*/
 
     /**
      * Quando um User muda de localização, poderá entrar em contacto com
