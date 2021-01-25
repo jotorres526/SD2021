@@ -74,6 +74,11 @@ public class Location implements Comparable<Location>{
         return "(" + this.coordX + ", " + this.coordY + ")";
     }
 
+    /**
+     * Averigua se a localização está dentro do limite
+     * @param limit limite
+     * @return true se estiber dentro do limite
+     */
     public boolean isInLimit(int limit) {
         return Integer.parseInt(this.coordX) < limit && Integer.parseInt(this.coordY) < limit &&
                Integer.parseInt(this.coordX) >= 0 && Integer.parseInt(this.coordY) >= 0;

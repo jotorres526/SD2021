@@ -7,7 +7,6 @@ public class User implements Comparable<User> {
     private final String username;
     private final String password;
     private final boolean privileged;
-    // TODO: Encapsulamento
     private Location location;
     private boolean infected;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -146,6 +145,7 @@ public class User implements Comparable<User> {
     public int compareTo(User user) {
         return this.username.compareTo(user.getUsername());
     }
+
     public User clone() {
         return new User(this);
     }
